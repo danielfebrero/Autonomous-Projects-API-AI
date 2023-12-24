@@ -4,10 +4,10 @@
         "name": "Deploy Cloud Function",
         "type": "cloudcode.cloudfunctions",
         "request": "launch",
-        "functionName": "test-function",
+        "functionName": "function-hello-world",
         "gen": "GEN_2",
         "entryPoint": "helloHttp",
-        "revision": "1",
+        "revision": "function-hello-world-00001-pol",
         "testInput": "",
         "region": "us-central1",
         "runtime": "nodejs20"
