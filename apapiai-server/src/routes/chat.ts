@@ -3,7 +3,7 @@ import cors from "cors"
 import { authClient } from "../controllers/auth"
 import dotenv from "dotenv"
 
-import { addMessageToConversation } from "../controllers/diagflow"
+import { addMessageToConversation } from "../controllers/dialogflow"
 
 const router = express.Router()
 dotenv.config()
