@@ -1,17 +1,24 @@
 import { v4 as uuidv4 } from "uuid"
 
 import useRedux from "../../hooks/useRedux"
-import { setChatTextInput, addMessage, ChatMessage } from "../../reducers/chat"
+import {
+  setChatTextInput,
+  addMessage,
+  ChatMessage as ChatMessageType,
+} from "../../reducers/chat"
 
 import "./style.scss"
+import ChatMessage from "../../components/ChatMessage"
 
 const Chat: React.FC = () => {
   const { useAppDispatch, useAppSelector } = useRedux()
   const dispatch = useAppDispatch()
-  const { chatTextInput } = useAppSelector((state) => state.chat)
+  const { chatTextInput, currentConversation } = useAppSelector(
+    (state) => state.chat
+  )
   const { clientId } = useAppSelector((state) => state.user)
 
-  const buildChatMessage = (textInput: string): ChatMessage => {
+  const buildChatMessage = (textInput: string): ChatMessageType => {
     return {
       id: uuidv4(),
       content: textInput,
@@ -30,7 +37,18 @@ const Chat: React.FC = () => {
     <>
       <h2>Chat</h2>
       <div id="chat-container">
-        <div id="chat-messages" />
+        <div id="chat-messages">
+          {currentConversation?.messages.map((message) => {
+            return (
+              <ChatMessage
+                message={message.content}
+                senderIsLocalUser={message.sender === clientId}
+                senderName={""}
+                senderId={message.sender}
+              />
+            )
+          })}
+        </div>
         <form id="chat-form">
           <input
             id="chat-msg"

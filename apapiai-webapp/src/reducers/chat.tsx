@@ -67,6 +67,10 @@ export const chatSlice = createSlice({
       if (conv) changeConversation(state, conv)
     },
     addMessage: (state, action: PayloadAction<ChatMessage>) => {
+      if (!state.currentConversation) {
+        const conv = newConversation()
+        changeConversation(state, conv)
+      }
       state.currentConversation?.messages.push(action.payload)
     },
     setChatTextInput: (state, action: PayloadAction<string>) => {
