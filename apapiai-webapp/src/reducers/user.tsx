@@ -5,7 +5,11 @@ export type GoogleSigninResponse = CredentialResponse
 
 type UserState = GoogleSigninResponse & {}
 
-const initialState: UserState = {}
+const initialState: UserState = {
+  clientId: undefined,
+  credential: undefined,
+  select_by: undefined,
+}
 
 export const userSlice = createSlice({
   name: "user",

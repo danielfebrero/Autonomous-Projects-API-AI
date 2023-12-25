@@ -57,8 +57,13 @@ const Chat: React.FC = () => {
             required
             value={chatTextInput}
             onChange={(e) => dispatch(setChatTextInput(e.target.value))}
+            disabled={clientId === undefined}
           />
-          <button id="chat-submit" onClick={sendMessage}>
+          <button
+            id="chat-submit"
+            onClick={sendMessage}
+            disabled={clientId === undefined}
+          >
             Send
           </button>
         </form>

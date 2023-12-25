@@ -67,6 +67,7 @@ export const chatSlice = createSlice({
       if (conv) changeConversation(state, conv)
     },
     addMessage: (state, action: PayloadAction<ChatMessage>) => {
+      if (action.payload.sender === undefined) return
       if (!state.currentConversation) {
         const conv = newConversation()
         changeConversation(state, conv)
