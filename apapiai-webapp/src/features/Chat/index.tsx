@@ -6,9 +6,9 @@ import {
   addMessage,
   ChatMessage as ChatMessageType,
 } from "../../reducers/chat"
+import ChatMessage from "../../components/ChatMessage"
 
 import "./style.scss"
-import ChatMessage from "../../components/ChatMessage"
 
 const Chat: React.FC = () => {
   const { useAppDispatch, useAppSelector } = useRedux()
