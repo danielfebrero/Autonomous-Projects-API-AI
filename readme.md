@@ -12,7 +12,7 @@ Brief description of your project.
 
 ## Screenshot
 
-![Project Screenshot](https://pbs.twimg.com/media/GCJNc8tXIAAfgWx?format=jpg&name=medium)
+![Project Screenshot](https://i.imgur.com/Hx0h45p.png)
 
 ## Installation
 
