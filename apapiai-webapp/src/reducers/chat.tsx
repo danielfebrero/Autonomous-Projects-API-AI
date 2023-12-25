@@ -8,10 +8,10 @@ type ChatConversation = {
   messages: ChatMessage[]
 }
 
-type ChatMessage = {
+export type ChatMessage = {
   id: string
   content: string
-  sender: string
+  sender?: string
   timestamp: number
 }
 
