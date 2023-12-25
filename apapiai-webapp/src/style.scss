@@ -1,0 +1,11 @@
+@import '_variables';
+
+body {
+  font-family: $font-stack;
+  color: $secondary-color;
+}
+
+button {
+  background-color: $primary-color;
+  border-radius: $button-border-radius;
+}

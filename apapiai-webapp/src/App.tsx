@@ -4,6 +4,8 @@ import { GoogleOAuthProvider } from "@react-oauth/google"
 
 import Welcome from "./pages/Welcome"
 
+import "./style.scss"
+
 const App: React.FC = () => {
   return (
     <GoogleOAuthProvider clientId="705932432287-6ekvke50s3ifkbhvu5tg7mos1gas393n.apps.googleusercontent.com">

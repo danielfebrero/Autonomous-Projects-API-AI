@@ -1,3 +1,61 @@
+@import '../../_variables';
+
 #chat-container {
     display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    width: 100vw;
+
+    #chat-messages {
+        flex-grow: 1;
+        display: flex;
+    }
+
+    #chat-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: $form-padding;
+        border: 1px solid $form-border-color;
+        border-radius: $form-border-radius;
+        background-color: $form-background-color;
+        box-shadow: 0 2px 4px $shadow-color;
+        margin: $container-margin;
+        width: $form-width;
+        
+        input#chat-msg {
+            width: 100%;
+            padding: 10px 15px;
+            margin-bottom: $input-margin-bottom;
+            border: 1px solid $border-color;
+            border-radius: $input-border-radius;
+            box-sizing: border-box;
+            font-size: $font-size;
+            transition: border-color 0.3s;
+        
+            &:focus {
+            border-color: $primary-color;
+            outline: none;
+            }
+        
+            &::placeholder {
+            color: $placeholder-color;
+            }
+        }
+        
+        button {
+            padding: 10px 15px;
+            border: none;
+            background-color: $primary-color;
+            color: white;
+            font-size: $font-size;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        
+            &:hover {
+            background-color: $secondary-color;
+            }
+        }
+    }
 }
