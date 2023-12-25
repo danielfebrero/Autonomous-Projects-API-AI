@@ -1,9 +1,13 @@
+import { UserState } from "../user"
+
 export type ChatConversation = {
   id: string
   name: string
   lastMessage: string
   messages: ChatMessage[]
 }
+
+export type ChatMessagePayload = { message: ChatMessage; user: UserState }
 
 export type ChatMessage = {
   id: string

@@ -3,7 +3,7 @@ import { CredentialResponse } from "@react-oauth/google"
 
 export type GoogleSigninResponse = CredentialResponse
 
-type UserState = GoogleSigninResponse & {}
+export type UserState = GoogleSigninResponse & {}
 
 const initialState: UserState = {
   clientId: undefined,

@@ -5,7 +5,7 @@ import {
   changeConversation,
   sendMessageToServer,
 } from "./utils"
-import { ChatMessage, ChatState } from "./types"
+import { ChatMessage, ChatState, ChatMessagePayload } from "./types"
 
 // Define the initial state using that type
 const initialState: ChatState = {
@@ -26,14 +26,17 @@ export const chatSlice = createSlice({
       const conv = getConversation(state, action.payload)
       if (conv) changeConversation(state, conv)
     },
-    addMessage: (state, action: PayloadAction<ChatMessage>) => {
-      if (action.payload.sender === undefined) return
+    addMessage: (state, action: PayloadAction<ChatMessagePayload>) => {
+      if (action.payload.message.sender === undefined) return
       if (!state.currentConversation) {
         const conv = newConversation()
         changeConversation(state, conv)
       }
-      state.currentConversation?.messages.push(action.payload)
-      sendMessageToServer(action.payload)
+      state.currentConversation?.messages.push(action.payload.message)
+      sendMessageToServer({
+        message: action.payload.message,
+        user: action.payload.user,
+      })
     },
     setChatTextInput: (state, action: PayloadAction<string>) => {
       state.chatTextInput = action.payload

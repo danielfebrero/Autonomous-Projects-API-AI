@@ -13,20 +13,20 @@ const Chat: React.FC = () => {
   const { chatTextInput, currentConversation } = useAppSelector(
     (state) => state.chat
   )
-  const { clientId } = useAppSelector((state) => state.user)
+  const user = useAppSelector((state) => state.user)
 
   const buildChatMessage = (textInput: string): ChatMessageType => {
     return {
       id: uuidv4(),
       content: textInput,
-      sender: clientId,
+      sender: user.clientId,
       timestamp: Date.now(),
     }
   }
 
   const sendMessage = (obj: any) => {
     obj.preventDefault()
-    dispatch(addMessage(buildChatMessage(chatTextInput)))
+    dispatch(addMessage({ message: buildChatMessage(chatTextInput), user }))
     dispatch(setChatTextInput(""))
   }
 
@@ -40,7 +40,7 @@ const Chat: React.FC = () => {
               <ChatMessage
                 key={message.id}
                 message={message.content}
-                senderIsLocalUser={message.sender === clientId}
+                senderIsLocalUser={message.sender === user.clientId}
                 senderName={""}
                 senderId={message.sender}
               />
@@ -55,12 +55,12 @@ const Chat: React.FC = () => {
             required
             value={chatTextInput}
             onChange={(e) => dispatch(setChatTextInput(e.target.value))}
-            disabled={clientId === undefined}
+            disabled={user.clientId === undefined}
           />
           <button
             id="chat-submit"
             onClick={sendMessage}
-            disabled={clientId === undefined}
+            disabled={user.clientId === undefined}
           >
             Send
           </button>

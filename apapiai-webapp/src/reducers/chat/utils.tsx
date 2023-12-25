@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from "uuid"
 import axios from "axios"
 
+import { UserState } from "../user"
 import { ChatConversation, ChatMessage, ChatState } from "./types"
 
 export const newConversation = (): ChatConversation => {
@@ -29,9 +30,16 @@ export const getConversation = (
   return state.conversations.filter((c) => c.id === conversationId)[0]
 }
 
-export const sendMessageToServer = (message: ChatMessage) => {
+export const sendMessageToServer = ({
+  message,
+  user,
+}: {
+  message: ChatMessage
+  user: UserState
+}) => {
+  if (user?.credential === undefined) return
   axios
-    .post("apapiai.darkeccho.com/chat", message)
+    .post("https://bard-407521.uc.r.appspot.com/chat", { message, user })
     .then((res) => {
       console.log(res)
     })
