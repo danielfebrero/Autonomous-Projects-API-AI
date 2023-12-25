@@ -39,7 +39,14 @@ export const sendMessageToServer = ({
 }) => {
   if (user?.credential === undefined) return
   axios
-    .post("https://bard-407521.uc.r.appspot.com/chat", { message, user })
+    .post(
+      `${
+        process.env.NODE_ENV === "production"
+          ? "https://bard-407521.uc.r.appspot.com"
+          : "http://localhost:8080"
+      }/chat`,
+      { message, user }
+    )
     .then((res) => {
       console.log(res)
     })

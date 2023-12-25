@@ -5,7 +5,8 @@ const router = express.Router()
 
 //Configure CORS
 const corsOptions = {
-  origin: "https://apapiai.uc.r.appspot.com",
+  origin:
+    process.env.NODE_ENV === "development" ? "*" : process.env.CORS_ORIGIN,
   methods: "GET,POST",
   allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept",
 }
