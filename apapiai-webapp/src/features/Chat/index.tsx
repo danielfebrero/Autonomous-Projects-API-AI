@@ -1,11 +1,8 @@
 import { v4 as uuidv4 } from "uuid"
 
 import useRedux from "../../hooks/useRedux"
-import {
-  setChatTextInput,
-  addMessage,
-  ChatMessage as ChatMessageType,
-} from "../../reducers/chat"
+import { setChatTextInput, addMessage } from "../../reducers/chat"
+import { ChatMessage as ChatMessageType } from "../../reducers/chat/types"
 import ChatMessage from "../../components/ChatMessage"
 
 import "./style.scss"
@@ -41,6 +38,7 @@ const Chat: React.FC = () => {
           {currentConversation?.messages.map((message) => {
             return (
               <ChatMessage
+                key={message.id}
                 message={message.content}
                 senderIsLocalUser={message.sender === clientId}
                 senderName={""}
