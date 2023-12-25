@@ -18,12 +18,14 @@ type ChatMessage = {
 interface ChatState {
   conversations: ChatConversation[]
   currentConversation: ChatConversation | null
+  chatTextInput: string
 }
 
 // Define the initial state using that type
 const initialState: ChatState = {
   conversations: [],
   currentConversation: null,
+  chatTextInput: "",
 }
 
 const newConversation = (): ChatConversation => {
@@ -67,10 +69,17 @@ export const chatSlice = createSlice({
     addMessage: (state, action: PayloadAction<ChatMessage>) => {
       state.currentConversation?.messages.push(action.payload)
     },
+    setChatTextInput: (state, action: PayloadAction<string>) => {
+      state.chatTextInput = action.payload
+    },
   },
 })
 
-export const { createConversation, setCurrentConversation, addMessage } =
-  chatSlice.actions
+export const {
+  createConversation,
+  setCurrentConversation,
+  addMessage,
+  setChatTextInput,
+} = chatSlice.actions
 
 export default chatSlice.reducer

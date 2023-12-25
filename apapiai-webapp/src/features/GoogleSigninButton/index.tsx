@@ -3,9 +3,7 @@ import { GoogleLogin } from "@react-oauth/google"
 import useRedux from "../../hooks/useRedux"
 import { signin, GoogleSigninResponse } from "../../reducers/user"
 
-type Props = {}
-
-const GoogleSigninButton: React.FC<Props> = () => {
+const GoogleSigninButton: React.FC = () => {
   const { useAppDispatch } = useRedux()
 
   const dispatch = useAppDispatch()
