@@ -1,5 +1,5 @@
-import express from "express";
-const router = express.Router();
+import express from "express"
+const router = express.Router()
 
 router.get("/", (req, res, next) => {
   const response = {
@@ -12,9 +12,9 @@ router.get("/", (req, res, next) => {
         },
       ],
     },
-  };
-  res.json(response);
-});
+  }
+  res.json(response)
+})
 
 router.post("/", (req, res, next) => {
   const response = {
@@ -27,8 +27,8 @@ router.post("/", (req, res, next) => {
         },
       ],
     },
-  };
-  res.json(response);
-});
+  }
+  res.json(response)
+})
 
-export default router;
+export default router

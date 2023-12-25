@@ -1,20 +1,20 @@
-import { GoogleLogin } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google"
 
-type Props = {};
+type Props = {}
 
 const GoogleSigninButton: React.FC<Props> = () => {
   return (
     <GoogleLogin
       onSuccess={(credentialResponse) => {
-        console.log(credentialResponse);
+        console.log(credentialResponse)
       }}
       onError={() => {
-        console.log("Login Failed");
+        console.log("Login Failed")
       }}
       useOneTap
       auto_select
     />
-  );
-};
+  )
+}
 
-export default GoogleSigninButton;
+export default GoogleSigninButton
