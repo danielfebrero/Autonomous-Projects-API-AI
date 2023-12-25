@@ -11,6 +11,7 @@ const GoogleSigninButton: React.FC = () => {
   const handleLogin = (gsr: GoogleSigninResponse) => {
     dispatch(signin(gsr))
   }
+
   return (
     <GoogleLogin
       onSuccess={handleLogin}

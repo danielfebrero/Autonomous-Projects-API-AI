@@ -3,6 +3,8 @@ import cors from "cors"
 import { authClient } from "../controllers/auth"
 import dotenv from "dotenv"
 
+import { addMessageToConversation } from "../controllers/diagflow"
+
 const router = express.Router()
 dotenv.config()
 
@@ -21,9 +23,14 @@ router.get("/", (req, res) => {
 
 router.post("/", (req, res) => {
   authClient(req.body.user.credential, req.body.app_id)
-    .then((response) => {
+    .then(async (response) => {
       console.log(response)
-      res.send(response)
+      const conversation = await addMessageToConversation(
+        req.body.conversationID,
+        req.body.message
+      )
+      console.log({ conversation })
+      res.send(conversation)
     })
     .catch((error) => {
       console.log(error)

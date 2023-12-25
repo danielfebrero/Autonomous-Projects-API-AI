@@ -2,6 +2,7 @@ import { UserState } from "../user"
 
 export type ChatConversation = {
   id: string
+  conversationID?: string
   name: string
   lastMessage: string
   messages: ChatMessage[]

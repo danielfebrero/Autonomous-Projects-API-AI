@@ -33,9 +33,11 @@ export const getConversation = (
 export const sendMessageToServer = ({
   message,
   user,
+  conversationID,
 }: {
   message: ChatMessage
   user: UserState
+  conversationID?: string
 }) => {
   if (user?.credential === undefined) return
   axios
@@ -45,7 +47,7 @@ export const sendMessageToServer = ({
           ? "https://bard-407521.uc.r.appspot.com"
           : "http://localhost:8080"
       }/chat`,
-      { message, user }
+      { message, user, app_id: process.env.GCLOUD_APP_ID, conversationID }
     )
     .then((res) => {
       console.log(res)
