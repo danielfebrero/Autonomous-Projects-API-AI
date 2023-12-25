@@ -6,7 +6,7 @@ import useRedux from "../../hooks/useRedux"
 import "./style.scss"
 
 const Welcome: React.FC = () => {
-  const { useAppSelector } = useRedux
+  const { useAppSelector } = useRedux()
   const user = useAppSelector((state) => state.user)
 
   return (

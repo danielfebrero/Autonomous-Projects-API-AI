@@ -6,7 +6,7 @@ import { signin, GoogleSigninResponse } from "../../reducers/user"
 type Props = {}
 
 const GoogleSigninButton: React.FC<Props> = () => {
-  const { useAppDispatch } = useRedux
+  const { useAppDispatch } = useRedux()
 
   const dispatch = useAppDispatch()
 
