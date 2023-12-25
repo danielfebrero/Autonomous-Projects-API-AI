@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 
-import GoogleSigninButton from "../features/GoogleSigninButton"
+import GoogleSigninButton from "../../features/GoogleSigninButton"
 
 const Welcome: React.FC = () => {
     const navigate = useNavigate();
