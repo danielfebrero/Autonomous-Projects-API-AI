@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { v4 as uuidv4 } from "uuid"
 
 type ChatConversation = {
   id: string
@@ -25,23 +26,43 @@ const initialState: ChatState = {
   currentConversation: null,
 }
 
+const newConversation = (): ChatConversation => {
+  return {
+    id: uuidv4(),
+    name: "New Conversation",
+    lastMessage: "",
+    messages: [],
+  }
+}
+
+const changeConversation = (
+  state: ChatState,
+  conversation: ChatConversation
+) => {
+  if (state.currentConversation?.id === conversation.id) return
+  if (state.currentConversation)
+    state.conversations.push(state.currentConversation)
+  state.currentConversation = conversation
+}
+
+const getConversation = (
+  state: ChatState,
+  conversationId: string
+): ChatConversation | undefined => {
+  return state.conversations.filter((c) => c.id === conversationId)[0]
+}
+
 export const chatSlice = createSlice({
   name: "chat",
   initialState,
   reducers: {
-    createConversation: (state, action: PayloadAction<ChatConversation>) => {
-      state.currentConversation = action.payload
+    createConversation: (state, action: PayloadAction<null>) => {
+      const conv = newConversation()
+      changeConversation(state, conv)
     },
     setCurrentConversation: (state, action: PayloadAction<string>) => {
-      if (state.currentConversation?.id === action.payload) return
-      if (state.currentConversation)
-        state.conversations.push(state.currentConversation)
-      state.currentConversation = state.conversations.filter(
-        (c) => c.id === action.payload
-      )[0]
-      state.conversations = state.conversations.filter(
-        (c) => c.id !== action.payload
-      )
+      const conv = getConversation(state, action.payload)
+      if (conv) changeConversation(state, conv)
     },
     addMessage: (state, action: PayloadAction<ChatMessage>) => {
       state.currentConversation?.messages.push(action.payload)
