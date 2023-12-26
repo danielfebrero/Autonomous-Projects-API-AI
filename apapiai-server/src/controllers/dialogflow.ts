@@ -1,4 +1,8 @@
-import { AgentsClient } from "@google-cloud/dialogflow-cx/build/src/v3beta1"
+import {
+  AgentsClient,
+  FlowsClient,
+  SessionsClient,
+} from "@google-cloud/dialogflow-cx/build/src/v3beta1"
 
 export type AgentClientType = (typeof AgentsClient)["prototype"]["getAgent"]
 type Callback<T, U, V> = (arg1: T, arg2: U, arg3: V) => void
@@ -13,7 +17,9 @@ type FirstOverload = Awaited<
 
 type AgentType = NonNullable<ExtractIAgent<FirstOverload>>
 
-export const startConversation = async (agent: AgentType) => {}
+export const startConversation = async (agent: AgentType) => {
+  // agent.
+}
 
 export const addMessageToConversation = async (
   conversationId: string,
@@ -22,9 +28,17 @@ export const addMessageToConversation = async (
   const agentClient = new AgentsClient({
     apiEndpoint: "us-central1-dialogflow.googleapis.com",
   })
-  const agent = await agentClient.getAgent({
+  const agentObject = (await agentClient.getAgent({
     name: `projects/${process.env.PROJECT_ID}/locations/us-central1/agents/${process.env.AGENT_ID}`,
+  })) as unknown as AgentType[]
+  const agent = agentObject[0]
+
+  const flowClient = new FlowsClient({
+    apiEndpoint: "us-central1-dialogflow.googleapis.com",
+  })
+  const flow = await flowClient.getFlow({
+    name: agent?.startFlow,
   })
 
-  console.log({ agent })
+  console.log({ agent, flow })
 }
