@@ -7,7 +7,7 @@ import {
 type AgentsClientType = (typeof AgentsClient)["prototype"]["getAgent"]
 type FlowsClientType = (typeof AgentsClient)["prototype"]["getAgent"]
 type Callback<T, U, V> = (arg1: T, arg2: U, arg3: V) => void
-type ExtractIAgent<T> = T extends Callback<any, infer Test, any> ? Test : never
+type ExtractType<T> = T extends Callback<any, infer Type, any> ? Type : never
 type FirstOverloadOfAgentsClient = Awaited<
   AgentsClientType extends {
     (arg1: infer P1, arg2: infer P2): infer R
@@ -15,7 +15,7 @@ type FirstOverloadOfAgentsClient = Awaited<
     ? [P1, P2, R]
     : never
 >[1]
-type FirstOverloadOfFlowClient = Awaited<
+type FirstOverloadOfFlowsClient = Awaited<
   FlowsClientType extends {
     (arg1: infer P1, arg2: infer P2): infer R
   }
@@ -23,8 +23,8 @@ type FirstOverloadOfFlowClient = Awaited<
     : never
 >[1]
 
-type AgentType = NonNullable<ExtractIAgent<FirstOverloadOfAgentsClient>>
-type FlowType = NonNullable<ExtractIAgent<FirstOverloadOfFlowClient>>
+type AgentType = NonNullable<ExtractType<FirstOverloadOfAgentsClient>>
+type FlowType = NonNullable<ExtractType<FirstOverloadOfFlowsClient>>
 
 export const startConversation = async () => {
   const agentClient = new AgentsClient({
