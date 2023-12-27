@@ -3,17 +3,14 @@ import cors from "cors"
 import { authClient } from "../controllers/auth"
 import dotenv from "dotenv"
 
-import {
-  addMessageToConversation,
-  startConversation,
-} from "../controllers/dialogflow"
+import { startConversation } from "../controllers/dialogflow"
 
 const router = express.Router()
 dotenv.config()
 
 //Configure CORS
 const corsOptions = {
-  origin: process.env.NODE_ENV === "production" ? process.env.CORS_ORIGIN : "*",
+  origin: "*",
   methods: "GET,POST",
   allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept",
 }
@@ -27,14 +24,9 @@ router.get("/", (req, res) => {
 router.post("/", (req, res) => {
   authClient(req.body.user.credential, req.body.app_id)
     .then(async (response) => {
-      console.log(response)
-      // const conversation = await addMessageToConversation(
-      //   req.body.conversationID,
-      //   req.body.message
-      // )
-      const convResonse = await startConversation(req.body.message)
-      console.log({ convResonse })
-      res.send(convResonse)
+      const convResponse = await startConversation(req.body.message.content)
+      console.log({ convResponse })
+      res.send(convResponse)
     })
     .catch((error) => {
       console.log(error)
