@@ -8,7 +8,7 @@ export type ChatConversation = {
   messages: ChatMessage[]
 }
 
-export type ChatMessagePayload = { message: ChatMessage; user: UserState }
+export type ChatMessagePayload = { message: ChatMessage; user?: UserState }
 
 export type ChatMessage = {
   id: string
@@ -21,4 +21,15 @@ export interface ChatState {
   conversations: ChatConversation[]
   currentConversation: ChatConversation | null
   chatTextInput: string
+}
+
+export type TextReponseFromServer = {
+  text: string[]
+}
+
+export type ChatResponseFromServer = {
+  channel?: string
+  message?: "text"
+  text?: TextReponseFromServer
+  error?: string
 }

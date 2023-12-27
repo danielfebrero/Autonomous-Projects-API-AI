@@ -2,7 +2,13 @@ import { v4 as uuidv4 } from "uuid"
 import axios from "axios"
 
 import { UserState } from "../user"
-import { ChatConversation, ChatMessage, ChatState } from "./types"
+import {
+  ChatConversation,
+  ChatMessage,
+  ChatState,
+  ChatResponseFromServer,
+} from "./types"
+import { CredentialResponse } from "@react-oauth/google"
 
 export const newConversation = (): ChatConversation => {
   return {
@@ -30,7 +36,7 @@ export const getConversation = (
   return state.conversations.filter((c) => c.id === conversationId)[0]
 }
 
-export const sendMessageToServer = ({
+export const sendMessageToServer = async ({
   message,
   user,
   conversationID,
@@ -38,10 +44,12 @@ export const sendMessageToServer = ({
   message: ChatMessage
   user: UserState
   conversationID?: string
-}) => {
-  if (user?.credential === undefined) return
-  axios
-    .post(
+}): Promise<ChatResponseFromServer[]> => {
+  try {
+    if (user?.credential === undefined) {
+      return [{ error: "User not logged in" }]
+    }
+    const res = await axios.post(
       `${
         process.env.NODE_ENV === "production"
           ? "https://bard-407521.uc.r.appspot.com"
@@ -49,10 +57,22 @@ export const sendMessageToServer = ({
       }/chat`,
       { message, user, app_id: process.env.GCLOUD_APP_ID, conversationID }
     )
-    .then((res) => {
-      console.log(res)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+
+    const chatResponseFromServer: ChatResponseFromServer[] = res.data
+    return chatResponseFromServer
+  } catch (err) {
+    return [{ error: err }] as ChatResponseFromServer[]
+  }
+}
+
+export const buildChatMessage = (
+  textInput: string,
+  user?: CredentialResponse
+): ChatMessage => {
+  return {
+    id: uuidv4(),
+    content: textInput,
+    sender: user?.clientId ?? "server",
+    timestamp: Date.now(),
+  }
 }

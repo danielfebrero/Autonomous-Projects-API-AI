@@ -1,10 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import {
-  getConversation,
-  newConversation,
-  changeConversation,
-  sendMessageToServer,
-} from "./utils"
+import { getConversation, newConversation, changeConversation } from "./utils"
 import { ChatState, ChatMessagePayload } from "./types"
 
 // Define the initial state using that type
@@ -33,11 +28,6 @@ export const chatSlice = createSlice({
         changeConversation(state, conv)
       }
       state.currentConversation?.messages.push(action.payload.message)
-      sendMessageToServer({
-        message: action.payload.message,
-        user: action.payload.user,
-        conversationID: state.currentConversation?.conversationID,
-      })
     },
     setChatTextInput: (state, action: PayloadAction<string>) => {
       state.chatTextInput = action.payload

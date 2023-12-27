@@ -38,21 +38,21 @@ type IntentResponseType = NonNullable<
 >
 
 export const startConversation = async (query: string) => {
-  const agentsClient = new AgentsClient({
-    apiEndpoint: "us-central1-dialogflow.googleapis.com",
-  })
-  const agentsObject = (await agentsClient.getAgent({
-    name: `projects/${process.env.PROJECT_ID}/locations/us-central1/agents/${process.env.AGENT_ID}`,
-  })) as unknown as AgentType[]
-  const agent = agentsObject[0]
+  // const agentsClient = new AgentsClient({
+  //   apiEndpoint: "us-central1-dialogflow.googleapis.com",
+  // })
+  // const agentsObject = (await agentsClient.getAgent({
+  //   name: `projects/${process.env.PROJECT_ID}/locations/us-central1/agents/${process.env.AGENT_ID}`,
+  // })) as unknown as AgentType[]
+  // const agent = agentsObject[0]
 
-  const flowsClient = new FlowsClient({
-    apiEndpoint: "us-central1-dialogflow.googleapis.com",
-  })
-  const flowsObject = (await flowsClient.getFlow({
-    name: agent?.startFlow,
-  })) as unknown as FlowType[]
-  const flow = flowsObject[0]
+  // const flowsClient = new FlowsClient({
+  //   apiEndpoint: "us-central1-dialogflow.googleapis.com",
+  // })
+  // const flowsObject = (await flowsClient.getFlow({
+  //   name: agent?.startFlow,
+  // })) as unknown as FlowType[]
+  // const flow = flowsObject[0]
 
   const sessionsClient = new SessionsClient({
     apiEndpoint: "us-central1-dialogflow.googleapis.com",
@@ -60,9 +60,9 @@ export const startConversation = async (query: string) => {
 
   const sessionId = Math.random().toString(36).substring(7)
 
-  await detectIntentText(query, sessionId, sessionsClient)
+  return await detectIntentText(query, sessionId, sessionsClient)
 
-  console.log({ agent, flow })
+  // console.log({ agent, flow })
 }
 
 async function detectIntentText(
@@ -104,6 +104,8 @@ async function detectIntentText(
   console.log(
     `Current Page: ${response?.queryResult?.currentPage?.displayName}`
   )
+
+  return response?.queryResult?.responseMessages
 }
 
 export const addMessageToConversation = (query: string, sessionId: string) => {}

@@ -2,8 +2,11 @@ import { v4 as uuidv4 } from "uuid"
 
 import useRedux from "../../hooks/useRedux"
 import { setChatTextInput, addMessage } from "../../reducers/chat"
-import { ChatMessage as ChatMessageType } from "../../reducers/chat/types"
 import ChatMessage from "../../components/ChatMessage"
+import {
+  buildChatMessage,
+  sendMessageToServer,
+} from "../../reducers/chat/utils"
 
 import "./style.scss"
 
@@ -14,20 +17,40 @@ const Chat: React.FC = () => {
     (state) => state.chat
   )
   const user = useAppSelector((state) => state.user)
+  const chat = useAppSelector((state) => state.chat)
 
-  const buildChatMessage = (textInput: string): ChatMessageType => {
-    return {
-      id: uuidv4(),
-      content: textInput,
-      sender: user.clientId,
-      timestamp: Date.now(),
-    }
-  }
-
-  const sendMessage = (obj: any) => {
+  const sendMessage = async (obj: any) => {
+    const message = buildChatMessage(chatTextInput, user)
     obj.preventDefault()
-    dispatch(addMessage({ message: buildChatMessage(chatTextInput), user }))
+    dispatch(addMessage({ message, user }))
     dispatch(setChatTextInput(""))
+
+    // send message to server
+    const messagesFromServer: any[] = []
+
+    const res = await sendMessageToServer({
+      message,
+      user,
+      conversationID: chat.currentConversation?.conversationID,
+    })
+
+    res.forEach((r) => {
+      if (r.error) {
+        console.log(r.error)
+      } else {
+        console.log({ r })
+        r.text?.text?.forEach((t) => {
+          dispatch(
+            addMessage({
+              message: buildChatMessage(t as unknown as string),
+              user: undefined,
+            })
+          )
+        })
+      }
+    })
+
+    console.log(messagesFromServer)
   }
 
   return (
