@@ -4,6 +4,7 @@ import bodyParser from "body-parser"
 
 import helloWorldRouter from "./routes/helloworld"
 import chatRouter from "./routes/chat"
+import yfinanceRouter from "./routes/yfinance"
 
 dotenv.config()
 
@@ -23,8 +24,8 @@ app.get("/", (req: Request, res: Response) => {
 })
 
 app.use("/helloworld", helloWorldRouter)
-
 app.use("/chat", chatRouter)
+app.use("/yfinance", yfinanceRouter)
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`)

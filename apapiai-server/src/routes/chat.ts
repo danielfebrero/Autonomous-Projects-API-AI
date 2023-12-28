@@ -24,13 +24,16 @@ router.get("/", (req, res) => {
 router.post("/", (req, res) => {
   authClient(req.body.user.credential, req.body.app_id)
     .then(async (userId) => {
-      const convResponse = await addToChat(userId, req.body.message.content)
+      const convResponse = await addToChat(
+        userId ?? "",
+        req.body.message.content
+      )
       console.log({ convResponse })
       res.send(convResponse)
     })
     .catch((error) => {
       console.log(error)
-      res.send(error)
+      res.status(500).send(error)
     })
 })
 
