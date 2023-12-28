@@ -9,13 +9,17 @@ const io = new Server(server, {
   },
 })
 
+const socketUsers: any = {}
+const uuidsMapping: any = {}
+
+export const getSocket = (socketUuid: string) => socketUsers[socketUuid]
+
 export const startIO = () => {
   io.on("connection", (socket) => {
-    const socketUsers: any = {}
-    const uuidsMapping: any = {}
     const socketId = socket.id ?? ""
 
     socket.on("registerUuid", (uuid) => {
+      console.log("registerUuid", uuid)
       socketUsers[uuid] = socket
       uuidsMapping[socketId] = uuid
     })

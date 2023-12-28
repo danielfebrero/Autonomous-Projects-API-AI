@@ -20,7 +20,16 @@ const Chat: React.FC = () => {
   const user = useAppSelector((state) => state.user)
   const chat = useAppSelector((state) => state.chat)
 
-  const { isConnected } = useSocket()
+  const { isConnected, socketUuid, socket } = useSocket()
+
+  const receivedMessageFromServer = (t: string) => {
+    dispatch(
+      addMessage({
+        message: buildChatMessage(t as unknown as string),
+        user: undefined,
+      })
+    )
+  }
 
   const sendMessage = async (obj: any) => {
     const message = buildChatMessage(chatTextInput, user)
@@ -28,35 +37,26 @@ const Chat: React.FC = () => {
     dispatch(addMessage({ message, user }))
     dispatch(setChatTextInput(""))
 
-    // send message to server
-    const messagesFromServer: any[] = []
-
     const res = await sendMessageToServer({
       message,
       user,
       conversationID: chat.currentConversation?.conversationID,
+      socketUuid,
     })
 
     res.forEach((r) => {
       if (r.error) {
         console.log(r.error)
       } else {
-        console.log({ r })
-        r.text?.text?.forEach((t) => {
-          dispatch(
-            addMessage({
-              message: buildChatMessage(t as unknown as string),
-              user: undefined,
-            })
-          )
-        })
+        r.text?.text?.forEach(receivedMessageFromServer)
       }
     })
   }
 
   useEffect(() => {
     if (isConnected) {
-      console.log("connected")
+      console.log("connected", socketUuid)
+      socket.on("message", receivedMessageFromServer)
     } else {
       console.log("disconnected")
     }

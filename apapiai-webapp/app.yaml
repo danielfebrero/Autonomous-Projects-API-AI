@@ -2,6 +2,7 @@ runtime: nodejs20
 
 env_variables:
   PORT: 8080
+  API_URL: https://bard-407521.uc.r.appspot.com
 
 handlers:
   # Serve all static files with url ending with a file extension

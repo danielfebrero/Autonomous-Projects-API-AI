@@ -40,10 +40,12 @@ export const sendMessageToServer = async ({
   message,
   user,
   conversationID,
+  socketUuid,
 }: {
   message: ChatMessage
   user: UserState
   conversationID?: string
+  socketUuid: string
 }): Promise<ChatResponseFromServer[]> => {
   try {
     if (user?.credential === undefined) {
@@ -52,10 +54,16 @@ export const sendMessageToServer = async ({
     const res = await axios.post(
       `${
         process.env.NODE_ENV === "production"
-          ? "https://bard-407521.uc.r.appspot.com"
+          ? process.env.API_URL
           : "http://localhost:8080"
       }/chat`,
-      { message, user, app_id: process.env.GCLOUD_APP_ID, conversationID }
+      {
+        message,
+        user,
+        app_id: process.env.GCLOUD_APP_ID,
+        conversationID,
+        socketUuid,
+      }
     )
 
     const chatResponseFromServer: ChatResponseFromServer[] = res.data

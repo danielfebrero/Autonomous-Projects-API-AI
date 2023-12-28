@@ -4,19 +4,21 @@ import { io } from "socket.io-client"
 
 export const socket = io("http://localhost:4000")
 
+const defaultOnMessage = (...message: any[]) => console.log(message)
+
 const useSocket = () => {
   const [isConnected, setIsConnected] = useState(socket.connected)
-  const uuid = uuidv4()
+  const [socketUuid, setSocketUuid] = useState(uuidv4())
 
   useEffect(() => {
     function onConnect() {
       setIsConnected(true)
-      socket.emit("registerUuid", uuid)
+      socket.emit("registerUuid", socketUuid)
     }
 
     function onDisconnect() {
       setIsConnected(false)
-      socket.emit("unregisterUuid", uuid)
+      socket.emit("unregisterUuid", socketUuid)
     }
 
     socket.on("connect", onConnect)
@@ -28,7 +30,7 @@ const useSocket = () => {
     }
   }, [])
 
-  return { isConnected }
+  return { isConnected, socketUuid, socket }
 }
 
 export default useSocket

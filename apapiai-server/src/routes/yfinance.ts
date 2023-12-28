@@ -5,6 +5,7 @@ import {
   getInsights,
 } from "../controllers/yfinance"
 import { prepareResponse } from "../utils/dialogflow"
+import { getSocket } from "../services/socket"
 
 const router = express.Router()
 
@@ -24,11 +25,15 @@ router.post("/historical", (req, res, next) => {
 })
 
 router.post("/quote", (req, res, next) => {
+  console.log({ req: req.body })
+  res.json(prepareResponse(JSON.stringify("Fetching quote...")))
+
   getQuote({
     symbol: req.body.symbol,
   })
     .then((response) => {
-      res.json(prepareResponse(JSON.stringify(response)))
+      const socket = getSocket(req.body.socketUuid)
+      socket.emit("message", JSON.stringify(response))
     })
     .catch((error) => {
       console.log(error)

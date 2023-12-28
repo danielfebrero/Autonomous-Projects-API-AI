@@ -2,18 +2,23 @@ import { SessionsClient } from "@google-cloud/dialogflow-cx/build/src/v3beta1"
 
 import { IntentResponseType } from "../../types/dialogflow"
 
-export const addToChat = async (userId: string, query: string) => {
+export const addToChat = async (
+  userId: string,
+  query: string,
+  socketUuid: string
+) => {
   const sessionsClient = new SessionsClient({
     apiEndpoint: "us-central1-dialogflow.googleapis.com",
   })
 
-  return await detectIntentText(query, userId, sessionsClient)
+  return await detectIntentText(query, userId, sessionsClient, socketUuid)
 }
 
 async function detectIntentText(
   query: string,
   sessionId: string,
-  sessionClient: SessionsClient
+  sessionClient: SessionsClient,
+  socketUuid: string
 ) {
   const sessionPath = sessionClient.projectLocationAgentSessionPath(
     process.env.PROJECT_ID ?? "",
@@ -30,11 +35,26 @@ async function detectIntentText(
       },
       languageCode: "fr-FR",
     },
+    queryParams: {
+      parameters: {
+        fields: {
+          socketUuid: {
+            stringValue: socketUuid,
+          },
+        },
+      },
+    },
   }
 
   const [response] = (await sessionClient.detectIntent(request)) as unknown as [
     IntentResponseType
   ]
+
+  console.log({
+    response: response?.queryResult,
+    fields: response?.queryResult?.parameters?.fields,
+    payload: response?.queryResult?.webhookPayloads,
+  })
 
   for (const message of response?.queryResult?.responseMessages ?? []) {
     if (message.text) {

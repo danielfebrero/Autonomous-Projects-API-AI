@@ -26,9 +26,9 @@ router.post("/", (req, res) => {
     .then(async (userId) => {
       const convResponse = await addToChat(
         userId ?? "",
-        req.body.message.content
+        req.body.message.content,
+        req.body.socketUuid
       )
-      console.log({ convResponse })
       res.send(convResponse)
     })
     .catch((error) => {
