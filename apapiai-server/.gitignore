@@ -2,3 +2,4 @@
 /dist
 .env
 app.yaml
+.cache

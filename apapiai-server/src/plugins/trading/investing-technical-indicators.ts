@@ -9,8 +9,14 @@ export const getTechnicalIndicatorsFromInvesting = async (symbol: string) => {
 
   await page.goto(`https://www.investing.com/currencies/${symbol}-technical`)
 
-  await page.waitForSelector("#onetrust-accept-btn-handler")
-  await page.click("#onetrust-accept-btn-handler")
+  try {
+    await page.waitForSelector("#onetrust-accept-btn-handler", {
+      timeout: 5000,
+    })
+    await page.click("#onetrust-accept-btn-handler")
+  } catch (error) {
+    console.log(error)
+  }
 
   const selector = await page.waitForSelector("#techinalContent")
   const img = await selector?.screenshot()

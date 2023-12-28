@@ -7,7 +7,10 @@ export const browse = async ({
   url: string
   selector?: string
 }) => {
-  const browser = await puppeteer.launch()
+  const browser = await puppeteer.launch({
+    headless: "new",
+    args: ["--no-sandbox"],
+  })
   const page = await browser.newPage()
   await page.setViewport({ width: 2160, height: 2048 })
 

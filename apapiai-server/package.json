@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npx tsc",
+    "build": "npx puppeteer browsers install chrome && npx tsc",
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts"
   },
-  "author": "",
+  "author": "Daniel Febrero",
   "license": "ISC",
   "dependencies": {
     "@google-cloud/dialogflow-cx": "^4.3.0",
