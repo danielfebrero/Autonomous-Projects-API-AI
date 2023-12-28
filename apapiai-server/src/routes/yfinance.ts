@@ -5,7 +5,7 @@ import {
   getInsights,
 } from "../controllers/yfinance"
 import { prepareResponse } from "../utils/dialogflow"
-import { getSocket } from "../services/socket"
+import { getSocket } from "../"
 
 const router = express.Router()
 
@@ -25,7 +25,6 @@ router.post("/historical", (req, res, next) => {
 })
 
 router.post("/quote", (req, res, next) => {
-  console.log({ req: req.body })
   res.json(prepareResponse(JSON.stringify("Fetching quote...")))
 
   getQuote({

@@ -1,6 +1,6 @@
 import { SessionsClient } from "@google-cloud/dialogflow-cx/build/src/v3beta1"
 
-import { IntentResponseType } from "../../types/dialogflow"
+import { IntentResponseType } from "../types/dialogflow"
 
 export const addToChat = async (
   userId: string,
@@ -49,12 +49,6 @@ async function detectIntentText(
   const [response] = (await sessionClient.detectIntent(request)) as unknown as [
     IntentResponseType
   ]
-
-  console.log({
-    response: response?.queryResult,
-    fields: response?.queryResult?.parameters?.fields,
-    payload: response?.queryResult?.webhookPayloads,
-  })
 
   for (const message of response?.queryResult?.responseMessages ?? []) {
     if (message.text) {

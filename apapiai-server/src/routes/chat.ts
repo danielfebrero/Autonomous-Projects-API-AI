@@ -1,5 +1,4 @@
 import express from "express"
-import cors from "cors"
 import { authClient } from "../controllers/auth"
 import dotenv from "dotenv"
 
@@ -7,15 +6,6 @@ import { addToChat } from "../controllers/dialogflow"
 
 const router = express.Router()
 dotenv.config()
-
-//Configure CORS
-const corsOptions = {
-  origin: "*",
-  methods: "GET,POST",
-  allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept",
-}
-
-router.use("/", cors(corsOptions))
 
 router.get("/", (req, res) => {
   res.send("Hello World")

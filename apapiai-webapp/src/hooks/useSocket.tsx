@@ -2,9 +2,11 @@ import { useState, useEffect } from "react"
 import { v4 as uuidv4 } from "uuid"
 import { io } from "socket.io-client"
 
-export const socket = io("http://localhost:4000")
-
-const defaultOnMessage = (...message: any[]) => console.log(message)
+export const socket = io(
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:8080"
+    : "https://bard-407521.uc.r.appspot.com"
+)
 
 const useSocket = () => {
   const [isConnected, setIsConnected] = useState(socket.connected)

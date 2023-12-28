@@ -53,9 +53,9 @@ export const sendMessageToServer = async ({
     }
     const res = await axios.post(
       `${
-        process.env.NODE_ENV === "production"
-          ? process.env.API_URL
-          : "http://localhost:8080"
+        process.env.NODE_ENV === "development"
+          ? "http://localhost:8080"
+          : "https://bard-407521.uc.r.appspot.com"
       }/chat`,
       {
         message,
