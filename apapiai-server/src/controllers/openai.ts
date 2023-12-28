@@ -34,6 +34,5 @@ export const vision = async ({
     ],
   })
 
-  console.log({ response })
   return response.choices[0]
 }

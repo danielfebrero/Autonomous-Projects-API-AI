@@ -1,5 +1,7 @@
 import puppeteer from "puppeteer"
 
+import { vision } from "../../controllers/openai"
+
 export const getTechnicalIndicatorsFromInvesting = async (symbol: string) => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
@@ -12,10 +14,16 @@ export const getTechnicalIndicatorsFromInvesting = async (symbol: string) => {
 
   const selector = await page.waitForSelector("#techinalContent")
   const img = await selector?.screenshot()
-  const base64 = img?.toString("base64")
+  const base64 = img?.toString("base64") ?? ""
   const selectorContent = await selector?.evaluate((el) => el.textContent)
 
   await browser.close()
 
-  return { screenshot: base64, text: selectorContent }
+  const response = await vision({
+    base64,
+    instruction:
+      "Identify and list the financial trading indicators including moving averages, technical indicators, and pivot points from the image provided. Return as a structured JSON object.",
+  })
+
+  return { response, originalText: selectorContent }
 }
