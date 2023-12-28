@@ -1,6 +1,7 @@
-import { v4 as uuidv4 } from "uuid"
+import { useEffect } from "react"
 
 import useRedux from "../../hooks/useRedux"
+import useSocket from "../../hooks/useSocket"
 import { setChatTextInput, addMessage } from "../../reducers/chat"
 import ChatMessage from "../../components/ChatMessage"
 import {
@@ -18,6 +19,8 @@ const Chat: React.FC = () => {
   )
   const user = useAppSelector((state) => state.user)
   const chat = useAppSelector((state) => state.chat)
+
+  const { isConnected } = useSocket()
 
   const sendMessage = async (obj: any) => {
     const message = buildChatMessage(chatTextInput, user)
@@ -49,9 +52,15 @@ const Chat: React.FC = () => {
         })
       }
     })
-
-    console.log(messagesFromServer)
   }
+
+  useEffect(() => {
+    if (isConnected) {
+      console.log("connected")
+    } else {
+      console.log("disconnected")
+    }
+  }, [isConnected])
 
   return (
     <>

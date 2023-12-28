@@ -20,6 +20,7 @@
     "google-auth-library": "^9.4.1",
     "openai": "^4.24.1",
     "puppeteer": "^21.6.1",
+    "socket.io": "^4.7.2",
     "yahoo-finance2": "^2.9.0"
   },
   "devDependencies": {
