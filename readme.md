@@ -4,6 +4,14 @@
 
 apapiai is a project that allows you to create and manage your own virtual agents. With apapiai, you can create agents that can answer your questions, help you with tasks, and even play games with you.
 
+## APIs (plug-and-play)
+
+- puppeteer
+- openAI
+- yahoo finance
+- dialogflow cx
+- google signin
+
 ## Features
 
 apapiai offers a variety of features (as a developer), including:
