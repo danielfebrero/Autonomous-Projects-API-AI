@@ -4,6 +4,7 @@ import {
   getQuote,
   getInsights,
 } from "../controllers/yfinance"
+import { prepareResponse } from "../utils/dialogflow"
 
 const router = express.Router()
 
@@ -14,7 +15,7 @@ router.post("/historical", (req, res, next) => {
     period2: req.body.period2,
   })
     .then((response) => {
-      res.json(response)
+      res.json(prepareResponse(JSON.stringify(response)))
     })
     .catch((error) => {
       console.log(error)
@@ -27,7 +28,7 @@ router.post("/quote", (req, res, next) => {
     symbol: req.body.symbol,
   })
     .then((response) => {
-      res.json(response)
+      res.json(prepareResponse(JSON.stringify(response)))
     })
     .catch((error) => {
       console.log(error)
@@ -43,7 +44,7 @@ router.post("/insights", (req, res, next) => {
     region: req.body.region,
   })
     .then((response) => {
-      res.json(response)
+      res.json(prepareResponse(JSON.stringify(response)))
     })
     .catch((error) => {
       console.log(error)

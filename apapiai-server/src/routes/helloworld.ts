@@ -1,18 +1,11 @@
 import express from "express"
+
+import { prepareResponse } from "../utils/dialogflow"
+
 const router = express.Router()
 
 router.post("/", (req, res, next) => {
-  const response = {
-    fulfillmentResponse: {
-      messages: [
-        {
-          text: {
-            text: ["Hello, world from the server!"],
-          },
-        },
-      ],
-    },
-  }
+  const response = prepareResponse("Hello, world from the server!")
   res.json(response)
 })
 
