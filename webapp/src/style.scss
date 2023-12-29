@@ -23,3 +23,10 @@ button {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+#logo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 120px;
+}

@@ -28,8 +28,10 @@ router.post("/historical", (req, res, next) => {
 })
 
 router.post("/quote", (req, res, next) => {
+  res.send(200)
+
   const socket = getSocket(req.body.socketUuid)
-  res.json(prepareResponse(JSON.stringify("Fetching quote...")))
+  socket?.emit("message", prepareResponseForWebapp("Fetching quote...", "text"))
 
   const pendingTaskId = uuidv4()
   socket?.emit("message", prepareResponseForWebapp(pendingTaskId, "pending"))

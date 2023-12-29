@@ -12,6 +12,7 @@ const Welcome: React.FC = () => {
   return (
     <div id="welcome-container">
       <h1>Welcome to apapiai</h1>
+      <img id="logo" src="./logo512.png" />
       {user.credential === undefined && <GoogleSigninButton />}
       <Chat />
     </div>

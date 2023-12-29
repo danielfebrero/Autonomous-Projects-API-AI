@@ -47,9 +47,15 @@ npm install
 
 1) You need to setup gcloud cli and enable many APIs, good luck
 
-2) To use apapiai, simply run the following command:
+2) To use apapiai, from the root folder:
 
 ```
+npm start
+```
+
+3) In another terminal:
+```
+cd webapp 
 npm start
 ```
 
