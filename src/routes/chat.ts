@@ -14,9 +14,11 @@ router.post("/", (req, res) => {
         req.body.message,
         req.body.socketUuid
       )
-      res.send(
-        prepareResponseForWebapp(convResponse as unknown as string, "text")
-      )
+      if (convResponse) {
+        res.send(
+          prepareResponseForWebapp(convResponse as unknown as string, "text")
+        )
+      }
     })
     .catch((error) => {
       console.log(error)

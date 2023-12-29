@@ -67,5 +67,5 @@ async function detectIntentText(
   return response?.queryResult?.responseMessages &&
     response?.queryResult?.responseMessages[0]?.text?.text
     ? response?.queryResult?.responseMessages[0]?.text?.text[0]
-    : "Je n'ai pas de réponse."
+    : null
 }
