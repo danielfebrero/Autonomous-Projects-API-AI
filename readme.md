@@ -11,6 +11,8 @@ apapiai is a project that allows you to create and manage your own virtual agent
 - yahoo finance
 - dialogflow cx
 - google signin
+- vertex / gemini
+- twitter
 
 ## Features
 
