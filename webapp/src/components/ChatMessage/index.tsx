@@ -30,6 +30,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
       {message.type === "image" && (
         <div className="message-text">
           <img
+            className="message-image"
             src={`data:image/png;base64, ${message.value}`}
             alt="Received from chat"
           />

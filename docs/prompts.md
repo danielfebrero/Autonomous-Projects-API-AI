@@ -11,3 +11,5 @@
 - Montre moi les données historiques de EURUSD
 
 - Montre moi les indicateurs techniques pour EURUSD
+
+- screenshot of html of https://actions.darkeccho.com/privacy-policy

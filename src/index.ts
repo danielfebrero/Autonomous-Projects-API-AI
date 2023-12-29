@@ -61,7 +61,7 @@ io.on("connection", (socket) => {
   const socketId = socket.id ?? ""
   socketUsers.set(socketId, socket)
 
-  socket.emit("hello", socket.id)
+  socket.emit("hello", socketId)
   console.log({ socketId })
 
   socket.on("unregisterUuid", (uuid) => {
