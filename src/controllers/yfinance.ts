@@ -43,7 +43,7 @@ export const getInsights = async ({
   const insights = await yahooFinance.insights(selectedSymbol, {
     lang: lang ?? "en-US",
     reportsCount: reportsCount ?? 2,
-    region: "US",
+    region: region ?? "US",
   })
 
   return insights

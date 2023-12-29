@@ -1,6 +1,8 @@
 import OpenAI from "openai"
 
-const openai = new OpenAI()
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+})
 
 export const vision = async ({
   base64,
@@ -35,4 +37,24 @@ export const vision = async ({
   })
 
   return response.choices[0]
+}
+
+export const chat = async ({ instruction }: { instruction: string }) => {
+  const response = await openai.chat.completions.create({
+    model: "gpt-4-1106-preview",
+    max_tokens: 4096,
+    temperature: 0.5,
+    top_p: 1,
+    presence_penalty: 0,
+    frequency_penalty: 0,
+    stop: ["###"],
+    messages: [
+      {
+        role: "user",
+        content: instruction,
+      },
+    ],
+  })
+
+  return response.choices[0].message.content
 }

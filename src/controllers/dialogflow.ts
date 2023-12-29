@@ -68,6 +68,6 @@ async function detectIntentText(
 
   return response?.queryResult?.responseMessages &&
     response?.queryResult?.responseMessages[0]?.text?.text
-    ? response?.queryResult?.responseMessages[0]?.text?.text[0]
+    ? response?.queryResult?.responseMessages[0]?.text?.text.join("\n\n")
     : null
 }

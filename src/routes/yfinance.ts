@@ -6,7 +6,6 @@ import {
   getQuote,
   getInsights,
 } from "../controllers/yfinance"
-import { prepareResponse } from "../utils/dialogflow"
 import { getSocket } from "../"
 import { prepareResponseForWebapp } from "../utils/webapp"
 

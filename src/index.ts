@@ -12,6 +12,7 @@ import yfinanceRouter from "./routes/yfinance"
 import browseRouter from "./routes/browse"
 import pluginsRouter from "./routes/plugins"
 import openaiRouter from "./routes/openai"
+import aiRouter from "./routes/ai"
 
 const socketUsers = new Map<string, SocketIO.Socket>()
 
@@ -40,6 +41,7 @@ app.use("/yfinance", yfinanceRouter)
 app.use("/browse", browseRouter)
 app.use("/plugins", pluginsRouter)
 app.use("/openai", openaiRouter)
+app.use("/ai", aiRouter)
 
 // Handles any requests that don't match the ones above
 app.get("*", (req, res) => {
@@ -55,6 +57,7 @@ const io = new SocketIO.Server(server, {
 })
 
 io.on("connection", (socket) => {
+  console.log("CONNECTION")
   const socketId = socket.id ?? ""
   socketUsers.set(socketId, socket)
 
