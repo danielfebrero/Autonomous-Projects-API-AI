@@ -19,7 +19,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   senderIsLocalUser,
   senderName,
 }) => {
-  console.log({ message })
   return (
     <div
       className={`chat-message ${

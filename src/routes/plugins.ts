@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid"
 import { getTechnicalIndicatorsFromInvestingAndMarketData } from "../plugins/trading/investing-technical-indicators"
 import { getSocket } from "../"
 import { prepareResponseForWebapp } from "../utils/webapp"
-import { getEconomicCalendar } from "../plugins/trading/economic-calendar"
+import { getEconomicCalendarFromTE } from "../plugins/trading/economic-calendar"
 
 const router = express.Router()
 
@@ -61,7 +61,7 @@ router.post("/trading/economic-calendar", (req, res, next) => {
   const pendingTaskId = uuidv4()
   socket?.emit("message", prepareResponseForWebapp(pendingTaskId, "pending"))
 
-  getEconomicCalendar()
+  getEconomicCalendarFromTE()
     .then((response) => {
       const socket = getSocket(req.body.socketUuid)
       socket?.emit(

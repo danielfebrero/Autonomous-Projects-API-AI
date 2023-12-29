@@ -10,6 +10,10 @@
 
 - Montre moi les données historiques de EURUSD
 
-- Montre moi les indicateurs techniques pour EURUSD
+- Montre moi les indicateurs techniques pour TSLA
 
 - screenshot of html of https://actions.darkeccho.com/privacy-policy
+
+- Utilise le plugin technical-indicators et montre moi la data de eur-usd
+
+- Utilise le plugin calendrier économique
