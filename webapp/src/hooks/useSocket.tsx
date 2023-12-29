@@ -5,7 +5,7 @@ import { io } from "socket.io-client"
 export const socket = io(
   process.env.NODE_ENV === "development"
     ? "http://localhost:8080"
-    : "https://bard-407521.uc.r.appspot.com"
+    : "https://apt-leman.darkeccho.com"
 )
 
 const useSocket = () => {

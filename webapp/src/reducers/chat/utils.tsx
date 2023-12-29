@@ -55,7 +55,7 @@ export const sendMessageToServer = async ({
       `${
         process.env.NODE_ENV === "development"
           ? "http://localhost:8080"
-          : "https://bard-407521.uc.r.appspot.com"
+          : "https://apt-leman.darkeccho.com"
       }/chat`,
       {
         message,

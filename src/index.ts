@@ -4,6 +4,7 @@ import bodyParser from "body-parser"
 import SocketIO from "socket.io"
 import cors from "cors"
 import http from "http"
+import path from "path"
 
 import helloWorldRouter from "./routes/helloworld"
 import chatRouter from "./routes/chat"
@@ -31,9 +32,12 @@ app.use(
   })
 )
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Express + TypeScript Server")
-})
+// app.get("/", (req: Request, res: Response) => {
+//   res.send("Express + TypeScript Server")
+// })
+
+// Serve the static files from the React app
+app.use(express.static(path.join(__dirname, "../webapp/build")))
 
 app.use("/helloworld", helloWorldRouter)
 app.use("/chat", chatRouter)
@@ -41,6 +45,11 @@ app.use("/yfinance", yfinanceRouter)
 app.use("/browse", browseRouter)
 app.use("/plugins", pluginsRouter)
 app.use("/openai", openaiRouter)
+
+// Handles any requests that don't match the ones above
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../webapp/build", "index.html"))
+})
 
 const server = new http.Server(app)
 
@@ -56,6 +65,7 @@ io.on("connection", (socket) => {
   socket.on("registerUuid", (uuid) => {
     socketUsers[uuid] = socket
     uuidsMapping[socketId] = uuid
+    console.log("registerUuid", uuid)
   })
 
   socket.on("unregisterUuid", (uuid) => {
