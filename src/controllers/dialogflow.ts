@@ -64,5 +64,8 @@ async function detectIntentText(
     `Current Page: ${response?.queryResult?.currentPage?.displayName}`
   )
 
-  return response?.queryResult?.responseMessages
+  return response?.queryResult?.responseMessages &&
+    response?.queryResult?.responseMessages[0]?.text?.text
+    ? response?.queryResult?.responseMessages[0]?.text?.text[0]
+    : "Je n'ai pas de réponse."
 }

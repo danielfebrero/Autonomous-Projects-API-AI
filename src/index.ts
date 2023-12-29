@@ -13,9 +13,9 @@ import browseRouter from "./routes/browse"
 import pluginsRouter from "./routes/plugins"
 import openaiRouter from "./routes/openai"
 
-const socketUsers: any = {}
+const socketUsers = new Map<string, SocketIO.Socket>()
 
-export const getSocket = (socketUuid: string) => socketUsers[socketUuid]
+export const getSocket = (socketUuid: string) => socketUsers.get(socketUuid)
 
 dotenv.config()
 
@@ -56,17 +56,17 @@ const io = new SocketIO.Server(server, {
 
 io.on("connection", (socket) => {
   const socketId = socket.id ?? ""
-  socketUsers[socketId] = socket
+  socketUsers.set(socketId, socket)
 
   socket.emit("hello", socket.id)
-  console.log({ socket })
+  console.log({ socketId })
 
   socket.on("unregisterUuid", (uuid) => {
-    delete socketUsers[socketId]
+    socketUsers.delete(socketId)
   })
 
   socket.on("disconnect", () => {
-    delete socketUsers[socketId]
+    socketUsers.delete(socketId)
   })
 })
 

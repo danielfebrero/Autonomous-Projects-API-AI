@@ -21,18 +21,24 @@ export const getTechnicalIndicatorsFromInvestingAndMarketData = async (
     console.log(error)
   }
 
-  const selector = await page.waitForSelector("#techinalContent")
-  const img = await selector?.screenshot()
-  const base64 = img?.toString("base64") ?? ""
-  const selectorContent = await selector?.evaluate((el) => el.textContent)
+  var responseFromGPT, selectorContent
 
-  await browser.close()
+  try {
+    const selector = await page.waitForSelector("#techinalContent")
+    const img = await selector?.screenshot()
+    const base64 = img?.toString("base64") ?? ""
+    selectorContent = await selector?.evaluate((el) => el.textContent)
 
-  const responseFromGPT = await vision({
-    base64,
-    instruction:
-      "Identify and list the financial trading indicators including moving averages, technical indicators, and pivot points from the image provided. Return as a structured JSON object.",
-  })
+    await browser.close()
+
+    responseFromGPT = await vision({
+      base64,
+      instruction:
+        "Identify and list the financial trading indicators including moving averages, technical indicators, and pivot points from the image provided. Return as a structured JSON object.",
+    })
+  } catch (error) {
+    console.log(error)
+  }
 
   const quotes = await getQuote({ symbol })
 

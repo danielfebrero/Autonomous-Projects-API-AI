@@ -2,12 +2,18 @@ import { useEffect } from "react"
 
 import useRedux from "../../hooks/useRedux"
 import useSocket from "../../hooks/useSocket"
-import { setChatTextInput, addMessage } from "../../reducers/chat"
+import {
+  setChatTextInput,
+  addMessage,
+  replaceMessage,
+} from "../../reducers/chat"
 import ChatMessage from "../../components/ChatMessage"
 import {
   buildChatMessage,
   sendMessageToServer,
+  buildMessageFromText,
 } from "../../reducers/chat/utils"
+import { ChatResponseFromServer } from "../../reducers/chat/types"
 
 import "./style.scss"
 
@@ -22,35 +28,40 @@ const Chat: React.FC = () => {
 
   const { isConnected, socketUuid, socket } = useSocket()
 
-  const receivedMessageFromServer = (t: string) => {
-    dispatch(
-      addMessage({
-        message: buildChatMessage(t as unknown as string),
-        user: undefined,
-      })
-    )
+  const receivedMessageFromServer = (t: ChatResponseFromServer) => {
+    console.log({ t })
+    if (t.pendingTaskId) {
+      dispatch(
+        replaceMessage({
+          message: buildChatMessage(t),
+          user: undefined,
+          pendingTaskId: t.pendingTaskId,
+        })
+      )
+    } else {
+      dispatch(
+        addMessage({
+          message: buildChatMessage(t),
+          user: undefined,
+        })
+      )
+    }
   }
 
   const sendMessage = async (obj: any) => {
-    const message = buildChatMessage(chatTextInput, user)
+    const message = buildChatMessage(buildMessageFromText(chatTextInput), user)
     obj.preventDefault()
     dispatch(addMessage({ message, user }))
     dispatch(setChatTextInput(""))
 
     const res = await sendMessageToServer({
-      message,
+      message: message.content.value,
       user,
       conversationID: chat.currentConversation?.conversationID,
       socketUuid,
     })
 
-    res.forEach((r) => {
-      if (r.error) {
-        console.log(r.error)
-      } else {
-        r.text?.text?.forEach(receivedMessageFromServer)
-      }
-    })
+    if (res) receivedMessageFromServer(res)
   }
 
   useEffect(() => {
@@ -64,7 +75,6 @@ const Chat: React.FC = () => {
 
   return (
     <>
-      <h2>Chat</h2>
       <div id="chat-container">
         <div id="chat-messages">
           {currentConversation?.messages.map((message) => {

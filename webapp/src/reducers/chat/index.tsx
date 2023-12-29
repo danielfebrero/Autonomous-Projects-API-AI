@@ -1,6 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { getConversation, newConversation, changeConversation } from "./utils"
-import { ChatState, ChatMessagePayload } from "./types"
+import {
+  ChatState,
+  ChatMessagePayload,
+  ReplaceChatMessagePayload,
+} from "./types"
 
 // Define the initial state using that type
 const initialState: ChatState = {
@@ -32,6 +36,27 @@ export const chatSlice = createSlice({
     setChatTextInput: (state, action: PayloadAction<string>) => {
       state.chatTextInput = action.payload
     },
+    replaceMessage: (
+      state,
+      action: PayloadAction<ReplaceChatMessagePayload>
+    ) => {
+      const chatMessage = {
+        message: action.payload.message,
+        user: action.payload.user,
+      }
+      const messages = state.currentConversation?.messages.reduce(
+        (acc: any, v) => {
+          return v.content.type === "pending" &&
+            v.content.value === action.payload.pendingTaskId
+            ? [...acc, chatMessage.message]
+            : [...acc, v]
+        },
+        [] as any[]
+      )
+
+      if (state.currentConversation?.messages)
+        state.currentConversation.messages = messages
+    },
   },
 })
 
@@ -39,6 +64,7 @@ export const {
   createConversation,
   setCurrentConversation,
   addMessage,
+  replaceMessage,
   setChatTextInput,
 } = chatSlice.actions
 

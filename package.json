@@ -21,12 +21,14 @@
     "openai": "^4.24.1",
     "puppeteer": "^21.6.1",
     "socket.io": "^4.7.2",
+    "uuid": "^9.0.1",
     "yahoo-finance2": "^2.9.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/node": "^20.10.5",
+    "@types/uuid": "^9.0.7",
     "nodemon": "^3.0.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"

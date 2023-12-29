@@ -42,45 +42,54 @@ export const sendMessageToServer = async ({
   conversationID,
   socketUuid,
 }: {
-  message: ChatMessage
+  message: string
   user: UserState
   conversationID?: string
   socketUuid: string
-}): Promise<ChatResponseFromServer[]> => {
+}): Promise<ChatResponseFromServer | undefined> => {
   try {
-    if (user?.credential === undefined) {
-      return [{ error: "User not logged in" }]
-    }
-    const res = await axios.post(
-      `${
-        process.env.NODE_ENV === "development"
-          ? "http://localhost:8080"
-          : "https://apt-leman.darkeccho.com"
-      }/chat`,
-      {
-        message,
-        user,
-        app_id: process.env.GCLOUD_APP_ID,
-        conversationID,
-        socketUuid,
-      }
-    )
+    if (user.credential !== undefined) {
+      const res = await axios.post(
+        `${
+          process.env.NODE_ENV === "development"
+            ? "http://localhost:8080"
+            : "https://apt-leman.darkeccho.com"
+        }/chat`,
+        {
+          message,
+          user,
+          app_id: process.env.GCLOUD_APP_ID,
+          conversationID,
+          socketUuid,
+        }
+      )
 
-    const chatResponseFromServer: ChatResponseFromServer[] = res.data
-    return chatResponseFromServer
+      const chatResponseFromServer: ChatResponseFromServer = res.data
+      return chatResponseFromServer
+    }
   } catch (err) {
-    return [{ error: err }] as ChatResponseFromServer[]
+    console.log(err)
   }
 }
 
 export const buildChatMessage = (
-  textInput: string,
+  t: ChatResponseFromServer,
   user?: CredentialResponse
 ): ChatMessage => {
   return {
-    id: uuidv4(),
-    content: textInput,
-    sender: user?.clientId ?? "server",
     timestamp: Date.now(),
+    ...t,
+    id: uuidv4(),
+    sender: user?.clientId ?? "apapiai",
+  }
+}
+
+export const buildMessageFromText = (t: string): ChatResponseFromServer => {
+  return {
+    timestamp: Date.now(),
+    content: {
+      type: "text",
+      value: t,
+    },
   }
 }

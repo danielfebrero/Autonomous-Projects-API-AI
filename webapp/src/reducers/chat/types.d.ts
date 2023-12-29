@@ -10,9 +10,16 @@ export type ChatConversation = {
 
 export type ChatMessagePayload = { message: ChatMessage; user?: UserState }
 
+export type ReplaceChatMessagePayload = ChatMessagePayload & {
+  pendingTaskId: string
+}
+
 export type ChatMessage = {
   id: string
-  content: string
+  content: {
+    type: "text" | "json" | "image" | "pending"
+    value: string
+  }
   sender?: string
   timestamp: number
 }
@@ -28,8 +35,11 @@ export type TextReponseFromServer = {
 }
 
 export type ChatResponseFromServer = {
-  channel?: string
-  message?: "text"
-  text?: TextReponseFromServer
-  error?: string
+  content: {
+    type: "text" | "json" | "image" | "pending"
+    value: string
+  }
+  sender?: string
+  timestamp?: number
+  pendingTaskId?: string
 }

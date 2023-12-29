@@ -1,4 +1,6 @@
 import express from "express"
+import { v4 as uuidv4 } from "uuid"
+
 import {
   getHistoricalData,
   getQuote,
@@ -6,6 +8,7 @@ import {
 } from "../controllers/yfinance"
 import { prepareResponse } from "../utils/dialogflow"
 import { getSocket } from "../"
+import { prepareResponseForWebapp } from "../utils/webapp"
 
 const router = express.Router()
 
@@ -25,18 +28,27 @@ router.post("/historical", (req, res, next) => {
 })
 
 router.post("/quote", (req, res, next) => {
+  const socket = getSocket(req.body.socketUuid)
   res.json(prepareResponse(JSON.stringify("Fetching quote...")))
+
+  const pendingTaskId = uuidv4()
+  socket?.emit("message", prepareResponseForWebapp(pendingTaskId, "pending"))
 
   getQuote({
     symbol: req.body.symbol,
   })
     .then((response) => {
-      const socket = getSocket(req.body.socketUuid)
-      socket.emit("message", JSON.stringify(response))
+      socket?.emit(
+        "message",
+        prepareResponseForWebapp(
+          JSON.stringify(response),
+          "json",
+          pendingTaskId
+        )
+      )
     })
     .catch((error) => {
       console.log(error)
-      // res.status(500).send(error)
     })
 })
 
