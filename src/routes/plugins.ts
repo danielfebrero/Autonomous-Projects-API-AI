@@ -1,12 +1,21 @@
 import express from "express"
-import { getTechnicalIndicatorsFromInvesting } from "../plugins/trading/investing-technical-indicators"
+import { getTechnicalIndicatorsFromInvestingAndMarketData } from "../plugins/trading/investing-technical-indicators"
+import { getSocket } from "../"
 
 const router = express.Router()
 
-router.post("/trading/investing-technical-indicators", (req, res, next) => {
-  getTechnicalIndicatorsFromInvesting(req.body.symbol)
-    .then((response) => res.status(200).json(response))
-    .catch((err: any) => res.status(500).send("error: " + err))
-})
+router.post(
+  "/trading/investing-technical-indicators-market-data",
+  (req, res, next) => {
+    res.send("Fetching data...")
+    getTechnicalIndicatorsFromInvestingAndMarketData(req.body.symbol)
+      .then((response) => {
+        const socket = getSocket(req.body.socketUuid)
+        socket.emit("message", response.responseFromGPT)
+        socket.emit("message", JSON.stringify(response.quotes))
+      })
+      .catch((err: any) => console.log(err))
+  }
+)
 
 export default router

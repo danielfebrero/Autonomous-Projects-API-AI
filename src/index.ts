@@ -14,7 +14,6 @@ import pluginsRouter from "./routes/plugins"
 import openaiRouter from "./routes/openai"
 
 const socketUsers: any = {}
-const uuidsMapping: any = {}
 
 export const getSocket = (socketUuid: string) => socketUsers[socketUuid]
 
@@ -31,10 +30,6 @@ app.use(
     extended: true,
   })
 )
-
-// app.get("/", (req: Request, res: Response) => {
-//   res.send("Express + TypeScript Server")
-// })
 
 // Serve the static files from the React app
 app.use(express.static(path.join(__dirname, "../webapp/build")))
@@ -61,21 +56,17 @@ const io = new SocketIO.Server(server, {
 
 io.on("connection", (socket) => {
   const socketId = socket.id ?? ""
+  socketUsers[socketId] = socket
 
-  socket.on("registerUuid", (uuid) => {
-    socketUsers[uuid] = socket
-    uuidsMapping[socketId] = uuid
-    console.log("registerUuid", uuid)
-  })
+  socket.emit("hello", socket.id)
+  console.log({ socket })
 
   socket.on("unregisterUuid", (uuid) => {
-    delete socketUsers[uuid]
-    delete uuidsMapping[socketId]
+    delete socketUsers[socketId]
   })
 
   socket.on("disconnect", () => {
-    delete socketUsers[uuidsMapping[socketId]]
-    delete uuidsMapping[socketId]
+    delete socketUsers[socketId]
   })
 })
 

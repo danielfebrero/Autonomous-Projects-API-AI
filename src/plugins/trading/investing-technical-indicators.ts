@@ -1,8 +1,11 @@
 import puppeteer from "puppeteer"
 
 import { vision } from "../../controllers/openai"
+import { getQuote } from "../../controllers/yfinance"
 
-export const getTechnicalIndicatorsFromInvesting = async (symbol: string) => {
+export const getTechnicalIndicatorsFromInvestingAndMarketData = async (
+  symbol: string
+) => {
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
   await page.setViewport({ width: 2160, height: 2048 })
@@ -25,11 +28,13 @@ export const getTechnicalIndicatorsFromInvesting = async (symbol: string) => {
 
   await browser.close()
 
-  const response = await vision({
+  const responseFromGPT = await vision({
     base64,
     instruction:
       "Identify and list the financial trading indicators including moving averages, technical indicators, and pivot points from the image provided. Return as a structured JSON object.",
   })
 
-  return { response, originalText: selectorContent }
+  const quotes = await getQuote({ symbol })
+
+  return { responseFromGPT, originalTextFromInvesting: selectorContent, quotes }
 }

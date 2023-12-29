@@ -31,7 +31,6 @@ router.post("/quote", (req, res, next) => {
     symbol: req.body.symbol,
   })
     .then((response) => {
-      console.log({ req: req.body })
       const socket = getSocket(req.body.socketUuid)
       socket.emit("message", JSON.stringify(response))
     })

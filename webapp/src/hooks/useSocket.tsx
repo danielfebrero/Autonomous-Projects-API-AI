@@ -10,12 +10,11 @@ export const socket = io(
 
 const useSocket = () => {
   const [isConnected, setIsConnected] = useState(socket.connected)
-  const [socketUuid, setSocketUuid] = useState(uuidv4())
+  const [socketUuid, setSocketUuid] = useState("")
 
   useEffect(() => {
     function onConnect() {
       setIsConnected(true)
-      socket.emit("registerUuid", socketUuid)
     }
 
     function onDisconnect() {
@@ -25,6 +24,7 @@ const useSocket = () => {
 
     socket.on("connect", onConnect)
     socket.on("disconnect", onDisconnect)
+    socket.on("hello", setSocketUuid)
 
     return () => {
       socket.off("connect", onConnect)
