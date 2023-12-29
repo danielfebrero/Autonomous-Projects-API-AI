@@ -13,6 +13,7 @@ import browseRouter from "./routes/browse"
 import pluginsRouter from "./routes/plugins"
 import openaiRouter from "./routes/openai"
 import aiRouter from "./routes/ai"
+import twitterRouter from "./routes/twitter"
 
 const socketUsers = new Map<string, SocketIO.Socket>()
 
@@ -42,6 +43,7 @@ app.use("/browse", browseRouter)
 app.use("/plugins", pluginsRouter)
 app.use("/openai", openaiRouter)
 app.use("/ai", aiRouter)
+app.use("/twitter", twitterRouter)
 
 // Handles any requests that don't match the ones above
 app.get("*", (req, res) => {
@@ -51,6 +53,7 @@ app.get("*", (req, res) => {
 const server = new http.Server(app)
 
 const io = new SocketIO.Server(server, {
+  connectionStateRecovery: {},
   cors: {
     origin: "*",
   },

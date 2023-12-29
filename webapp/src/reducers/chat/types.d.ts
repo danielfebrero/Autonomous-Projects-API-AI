@@ -17,7 +17,7 @@ export type ReplaceChatMessagePayload = ChatMessagePayload & {
 export type ChatMessage = {
   id: string
   content: {
-    type: "text" | "json" | "image" | "pending"
+    type: MessageTypes
     value: string
   }
   sender?: string
@@ -36,10 +36,12 @@ export type TextReponseFromServer = {
 
 export type ChatResponseFromServer = {
   content: {
-    type: "text" | "json" | "image" | "pending"
+    type: MessageTypes
     value: string
   }
   sender?: string
   timestamp?: number
   pendingTaskId?: string
 }
+
+export type MessageTypes = "text" | "json" | "image" | "pending" | "link"

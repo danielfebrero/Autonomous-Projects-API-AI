@@ -11,6 +11,7 @@ router.post(
   "/trading/investing-technical-indicators-market-data",
   (req, res, next) => {
     res.send(200)
+
     const socket = getSocket(req.body.socketUuid)
     socket?.emit(
       "message",

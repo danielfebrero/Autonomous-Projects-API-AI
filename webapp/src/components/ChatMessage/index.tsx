@@ -1,8 +1,12 @@
+import Markdown from "react-markdown"
+
+import { MessageTypes } from "../../reducers/chat/types"
+
 import "./style.scss"
 
 type ChatMessageProps = {
   message: {
-    type: "text" | "image" | "json" | "pending"
+    type: MessageTypes
     value: string
   }
   senderIsLocalUser: boolean
@@ -25,6 +29,12 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
 
       {message.type === "text" && (
         <div className="message-text">{message.value}</div>
+      )}
+
+      {message.type === "link" && (
+        <div className="message-text">
+          <Markdown>{message.value}</Markdown>
+        </div>
       )}
 
       {message.type === "image" && (
