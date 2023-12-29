@@ -44,4 +44,10 @@ export type ChatResponseFromServer = {
   pendingTaskId?: string
 }
 
-export type MessageTypes = "text" | "json" | "image" | "pending" | "link"
+export type MessageTypes =
+  | "text"
+  | "json"
+  | "image"
+  | "pending"
+  | "link"
+  | "markdown"

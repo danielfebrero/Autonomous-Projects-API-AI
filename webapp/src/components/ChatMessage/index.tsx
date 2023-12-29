@@ -19,6 +19,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   senderIsLocalUser,
   senderName,
 }) => {
+  console.log({ message })
   return (
     <div
       className={`chat-message ${
@@ -31,7 +32,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
         <div className="message-text">{message.value}</div>
       )}
 
-      {message.type === "link" && (
+      {(message.type === "link" || message.type === "markdown") && (
         <div className="message-text">
           <Markdown>{message.value}</Markdown>
         </div>

@@ -31,7 +31,7 @@ router.post(
           "message",
           prepareResponseForWebapp(
             response.responseFromGPT as unknown as string,
-            "text",
+            "markdown",
             pendingTaskId
           )
         )

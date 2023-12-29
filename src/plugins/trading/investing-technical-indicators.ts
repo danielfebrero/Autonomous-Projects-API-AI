@@ -43,10 +43,14 @@ export const getTechnicalIndicatorsFromInvestingAndMarketData = async (
   const quotes = await getQuote({ symbol })
 
   console.log({
-    responseFromGPT,
+    responseFromGPT: responseFromGPT?.message.content,
     originalTextFromInvesting: selectorContent,
     quotes,
   })
 
-  return { responseFromGPT, originalTextFromInvesting: selectorContent, quotes }
+  return {
+    responseFromGPT: responseFromGPT?.message.content,
+    originalTextFromInvesting: selectorContent,
+    quotes,
+  }
 }
