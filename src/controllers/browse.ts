@@ -1,12 +1,6 @@
 import puppeteer from "puppeteer"
 
-export const browse = async ({
-  url,
-  selector,
-}: {
-  url: string
-  selector?: string
-}) => {
+export const goto = async (url: string) => {
   const browser = await puppeteer.launch({
     headless: "new",
     args: ["--no-sandbox"],
@@ -29,6 +23,17 @@ export const browse = async ({
     setTimeout(r, Math.floor(Math.random() * 5 * 1000))
   )
 
+  return { page, browser }
+}
+
+export const retrieve = async ({
+  url,
+  selector,
+}: {
+  url: string
+  selector?: string
+}) => {
+  const { page, browser } = await goto(url)
   const selected = selector
     ? await page.waitForSelector(selector)
     : await page.waitForSelector("html")
@@ -37,7 +42,8 @@ export const browse = async ({
   const base64 = img?.toString("base64")
 
   const selectorContent = await selected?.evaluate((el) => el.textContent)
+  const selectorHTML = await selected?.evaluate((el) => el.outerHTML)
   await browser.close()
 
-  return { img: base64, text: selectorContent }
+  return { img: base64, text: selectorContent, html: selectorHTML }
 }

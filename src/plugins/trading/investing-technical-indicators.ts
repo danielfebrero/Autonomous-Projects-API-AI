@@ -1,16 +1,13 @@
-import puppeteer from "puppeteer"
-
 import { vision } from "../../controllers/openai"
 import { getQuote } from "../../controllers/yfinance"
+import { goto } from "../../controllers/browse"
 
 export const getTechnicalIndicatorsFromInvestingAndMarketData = async (
   symbol: string
 ) => {
-  const browser = await puppeteer.launch()
-  const page = await browser.newPage()
-  await page.setViewport({ width: 2160, height: 2048 })
-
-  await page.goto(`https://www.investing.com/currencies/${symbol}-technical`)
+  const { page, browser } = await goto(
+    `https://www.investing.com/currencies/${symbol}-technical`
+  )
 
   try {
     await page.waitForSelector("#onetrust-accept-btn-handler", {
