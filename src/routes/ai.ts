@@ -2,6 +2,7 @@ import express from "express"
 import { v4 as uuidv4 } from "uuid"
 
 import { chat } from "../controllers/openai"
+import { generate } from "../controllers/vertex"
 import { getSocket } from "../"
 import { prepareResponseForWebapp } from "../utils/webapp"
 
@@ -9,6 +10,7 @@ const router = express.Router()
 
 const AIs: any = {
   "gpt4-turbo": chat,
+  "gemini-pro": generate,
 }
 
 router.post("/", (req, res, next) => {
