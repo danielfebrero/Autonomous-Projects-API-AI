@@ -27,6 +27,15 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
         <div className="message-text">{message.value}</div>
       )}
 
+      {message.type === "image" && (
+        <div className="message-text">
+          <img
+            src={`data:image/png;base64, ${message.value}`}
+            alt="Received from chat"
+          />
+        </div>
+      )}
+
       {message.type === "json" && (
         <div className="message-text">
           {<pre>{JSON.stringify(JSON.parse(message.value), null, 2)}</pre>}
