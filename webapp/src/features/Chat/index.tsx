@@ -61,7 +61,7 @@ const Chat: React.FC = () => {
       socketUuid,
     })
 
-    if (res) receivedMessageFromServer(res)
+    if (res && res.content) receivedMessageFromServer(res)
   }
 
   useEffect(() => {

@@ -64,6 +64,8 @@ async function detectIntentText(
     `Current Page: ${response?.queryResult?.currentPage?.displayName}`
   )
 
+  console.log({ response })
+
   return response?.queryResult?.responseMessages &&
     response?.queryResult?.responseMessages[0]?.text?.text
     ? response?.queryResult?.responseMessages[0]?.text?.text[0]

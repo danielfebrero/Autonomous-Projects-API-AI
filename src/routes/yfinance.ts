@@ -13,17 +13,34 @@ import { prepareResponseForWebapp } from "../utils/webapp"
 const router = express.Router()
 
 router.post("/historical", (req, res, next) => {
+  res.send(200)
+
+  const socket = getSocket(req.body.socketUuid)
+  socket?.emit(
+    "message",
+    prepareResponseForWebapp("Fetching historical data...", "text")
+  )
+
+  const pendingTaskId = uuidv4()
+  socket?.emit("message", prepareResponseForWebapp(pendingTaskId, "pending"))
+
   getHistoricalData({
     symbol: req.body.symbol,
     period1: req.body.period1,
     period2: req.body.period2,
   })
     .then((response) => {
-      res.json(prepareResponse(JSON.stringify(response)))
+      socket?.emit(
+        "message",
+        prepareResponseForWebapp(
+          JSON.stringify(response),
+          "json",
+          pendingTaskId
+        )
+      )
     })
     .catch((error) => {
       console.log(error)
-      res.status(500).send(error)
     })
 })
 
@@ -55,6 +72,17 @@ router.post("/quote", (req, res, next) => {
 })
 
 router.post("/insights", (req, res, next) => {
+  res.send(200)
+
+  const socket = getSocket(req.body.socketUuid)
+  socket?.emit(
+    "message",
+    prepareResponseForWebapp("Fetching insights...", "text")
+  )
+
+  const pendingTaskId = uuidv4()
+  socket?.emit("message", prepareResponseForWebapp(pendingTaskId, "pending"))
+
   getInsights({
     symbol: req.body.symbol,
     lang: req.body.lang,
@@ -62,11 +90,17 @@ router.post("/insights", (req, res, next) => {
     region: req.body.region,
   })
     .then((response) => {
-      res.json(prepareResponse(JSON.stringify(response)))
+      socket?.emit(
+        "message",
+        prepareResponseForWebapp(
+          JSON.stringify(response),
+          "json",
+          pendingTaskId
+        )
+      )
     })
     .catch((error) => {
       console.log(error)
-      res.status(500).send(error)
     })
 })
 

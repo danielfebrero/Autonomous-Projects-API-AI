@@ -18,6 +18,8 @@ router.post("/", (req, res) => {
         res.send(
           prepareResponseForWebapp(convResponse as unknown as string, "text")
         )
+      } else {
+        res.send(200)
       }
     })
     .catch((error) => {
