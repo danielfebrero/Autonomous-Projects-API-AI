@@ -12,6 +12,7 @@ import {
   buildChatMessage,
   sendMessageToServer,
   buildMessageFromText,
+  scrollToBottom,
 } from "../../reducers/chat/utils"
 import { ChatResponseFromServer } from "../../reducers/chat/types"
 
@@ -29,7 +30,6 @@ const Chat: React.FC = () => {
   const { isConnected, socketUuid, socket } = useSocket()
 
   const receivedMessageFromServer = (t: ChatResponseFromServer) => {
-    console.log({ t })
     if (t.pendingTaskId) {
       dispatch(
         replaceMessage({
@@ -46,6 +46,7 @@ const Chat: React.FC = () => {
         })
       )
     }
+    scrollToBottom()
   }
 
   const sendMessage = async (obj: any) => {
@@ -53,6 +54,7 @@ const Chat: React.FC = () => {
     obj.preventDefault()
     dispatch(addMessage({ message, user }))
     dispatch(setChatTextInput(""))
+    scrollToBottom()
 
     const res = await sendMessageToServer({
       message: message.content.value,

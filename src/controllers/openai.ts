@@ -1,8 +1,6 @@
 import OpenAI from "openai"
 
-const openai = new OpenAI({
-  apiKey: "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",
-})
+const openai = new OpenAI()
 
 export const vision = async ({
   base64,

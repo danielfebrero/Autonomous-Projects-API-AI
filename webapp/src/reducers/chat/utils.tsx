@@ -93,3 +93,12 @@ export const buildMessageFromText = (t: string): ChatResponseFromServer => {
     },
   }
 }
+
+export const scrollToBottom = () => {
+  document
+    .getElementById("chat-messages")
+    ?.scrollTo(
+      0,
+      document.getElementById("chat-messages")?.scrollHeight ?? 1000
+    )
+}
