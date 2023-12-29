@@ -12,18 +12,19 @@ const router = express.Router()
 const twitterUsers = new Map<string, any>()
 const twitterStates = new Map<string, any>()
 
-export const getTwitterUser = (userId: string) => twitterUsers.get(userId)
-export const getTwitterState = (state: string) => twitterStates.get(state)
-export const setTwitterUser = (userId: string, state: string) =>
-  twitterUsers.set(userId, state)
-export const setTwitterState = (state: string, user: any) =>
+export const getTwitterUserByState = (state: string) => twitterUsers.get(state)
+export const getTwitterStateByUserId = (userId: string) =>
+  twitterStates.get(userId)
+export const setTwitterUserByState = (state: string, user: any) =>
   twitterUsers.set(state, user)
+export const setTwitterStateByUserId = (userId: string, state: string) =>
+  twitterStates.set(userId, state)
 
 router.post("/tweet", (req, res, next) => {
   authClient(req.body.user.credential, req.body.app_id)
     .then(async (userId) => {
-      const state = getTwitterUser(userId ?? "")
-      const twitterUser = getTwitterState(state ?? "")
+      const state = getTwitterStateByUserId(userId ?? "")
+      const twitterUser = getTwitterUserByState(state ?? "")
       const loggedClient = twitterUser?.loggedClient
       const socket = getSocket(req.body.socketUuid)
 
@@ -52,7 +53,11 @@ router.post("/tweet", (req, res, next) => {
           .then((response: string) => {
             socket?.emit(
               "message",
-              prepareResponseForWebapp(response, "text", pendingTaskId)
+              prepareResponseForWebapp(
+                "Tweeted: " + response,
+                "text",
+                pendingTaskId
+              )
             )
           })
           .catch((error) => {
@@ -69,7 +74,7 @@ router.get("/callback", (req, res) => {
   // Extract state and code from query string
   const { state, code } = req.query
   // Get the saved codeVerifier from session
-  const twitterUser = getTwitterUser(state as string)
+  const twitterUser = getTwitterUserByState(state as string)
   const { codeVerifier, state: sessionState } = twitterUser
 
   if (!codeVerifier || !state || !sessionState || !code) {
@@ -83,6 +88,7 @@ router.get("/callback", (req, res) => {
   const client = new TwitterApi({
     // @ts-ignore
     clientId: process.env.TWITTER_CLIENT_ID,
+    clientSecret: process.env.TWITTER_CLIENT_SECRET,
   })
 
   const stringCode = code as string
@@ -103,13 +109,13 @@ router.get("/callback", (req, res) => {
         twitterUser.accessToken = accessToken
         twitterUser.refreshToken = refreshToken
         twitterUser.expiresIn = expiresIn
-        setTwitterUser(state as string, twitterUser)
-
-        // Example request
-        // const { data: userObject } = await loggedClient.v2.me()
+        setTwitterUserByState(state as string, twitterUser)
+        res.send("You can now safely close this tab.")
       }
     )
-    .catch(() => res.status(403).send("Invalid verifier or access tokens!"))
+    .catch((err) =>
+      res.status(403).send("Invalid verifier or access tokens!: " + err)
+    )
 })
 
 export default router
