@@ -39,7 +39,7 @@ export const vision = async ({
     ],
   })
 
-  return response.choices[0]
+  return response.choices[0].message.content
 }
 
 export const chat = async ({ instruction }: { instruction: string }) => {
