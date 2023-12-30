@@ -67,7 +67,9 @@ export const createAndRunThread = async (
   instructions: string,
   metadata: Record<string, unknown>
 ): Promise<string> => {
-  const thread = await openai.beta.threads.create({ messages, metadata })
+  console.log("thread !!!!!!!!!")
+  const thread = await openai.beta.threads.create({ messages })
+  console.log("run !!!!!!!!!")
   const run = await openai.beta.threads.runs.create(thread.id, {
     assistant_id,
     additional_instructions: instructions,
@@ -77,6 +79,7 @@ export const createAndRunThread = async (
   var loops = 0
   var returnResponse: string | undefined = undefined
   const interval = setInterval(async () => {
+    console.log("retrieve run !!!!!!!!!")
     const checkedRun = await openai.beta.threads.runs.retrieve(
       thread.id,
       run.id
@@ -84,6 +87,7 @@ export const createAndRunThread = async (
     if (checkedRun.status === "completed") {
       clearInterval(interval)
 
+      console.log("message list !!!!!!!!!")
       const threadMessages = await openai.beta.threads.messages.list(thread.id)
       const response = await openai.beta.threads.messages.retrieve(
         thread.id,
@@ -141,9 +145,5 @@ export const buildMessage = ({
     content: textContent,
     role: "user",
     file_id: fileId,
-    metadata: {
-      author: "Daniel Febrero",
-      tool: "apapia",
-    },
   } as ThreadCreateParams.Message
 }

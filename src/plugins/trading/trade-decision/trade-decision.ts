@@ -3,7 +3,7 @@ import {
   storeFileForMessages,
   createAndRunThread,
 } from "../../../controllers/openai"
-import { getEconomicCalendarFromDailyFX } from "../economic-calendar"
+import { getEconomicCalendarFromTE } from "../economic-calendar"
 import { getTechnicalIndicatorsFromInvestingAndMarketData } from "../investing-technical-indicators"
 
 export const getTradeDecision = async (symbol: string): Promise<string> => {
@@ -11,7 +11,7 @@ export const getTradeDecision = async (symbol: string): Promise<string> => {
     symbol.slice(0, 3).toLowerCase() + "-" + symbol.slice(3).toLowerCase()
 
   const promises = [
-    getEconomicCalendarFromDailyFX(),
+    getEconomicCalendarFromTE(),
     getTechnicalIndicatorsFromInvestingAndMarketData(symbolForInvesting),
   ]
 
@@ -27,7 +27,7 @@ export const getTradeDecision = async (symbol: string): Promise<string> => {
       // @ts-ignore
       economicCalendarMarkdown.data
     ),
-    storeFileForMessages(quotesJson),
+    storeFileForMessages(JSON.stringify(quotesJson)),
     storeFileForMessages(technicalIndicatorsJson),
   ]
 
