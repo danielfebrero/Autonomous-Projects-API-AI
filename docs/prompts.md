@@ -4,7 +4,7 @@
 
 - Je veux essayer la Cloud Fonction hello world
 
-- Demande a gpt4-turbo """quand est né Napoléon"""
+- Demande a gpt4-turbo \`\`\`quand est né Napoléon ```
 
 - Montre moi la quotation EURCHF
 
@@ -17,3 +17,5 @@
 - Utilise le plugin technical-indicators et montre moi la data de eur-usd
 
 - Utilise le plugin calendrier économique
+
+- tweet \`\`\`i can now tweet using NLP on apapiai. this tweet was sent through dialogflow cx.```

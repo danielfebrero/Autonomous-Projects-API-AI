@@ -12,7 +12,9 @@ router.post("/", (req, res) => {
       const convResponse = await addToChat(
         userId ?? "",
         req.body.message,
-        req.body.socketUuid
+        req.body.socketUuid,
+        req.body.user.credential,
+        req.body.app_id
       )
       if (convResponse) {
         res.send(

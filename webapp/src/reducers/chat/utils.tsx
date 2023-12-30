@@ -58,7 +58,8 @@ export const sendMessageToServer = async ({
         {
           message,
           user,
-          app_id: process.env.GCLOUD_APP_ID,
+          app_id:
+            "705932432287-6ekvke50s3ifkbhvu5tg7mos1gas393n.apps.googleusercontent.com",
           conversationID,
           socketUuid,
         }

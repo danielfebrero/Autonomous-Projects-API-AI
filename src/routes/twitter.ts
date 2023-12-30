@@ -21,7 +21,7 @@ export const setTwitterStateByUserId = (userId: string, state: string) =>
   twitterStates.set(userId, state)
 
 router.post("/tweet", (req, res, next) => {
-  authClient(req.body.user.credential, req.body.app_id)
+  authClient(req.body.credential, req.body.appId)
     .then(async (userId) => {
       const state = getTwitterStateByUserId(userId ?? "")
       const twitterUser = getTwitterUserByState(state ?? "")
@@ -49,7 +49,7 @@ router.post("/tweet", (req, res, next) => {
           "message",
           prepareResponseForWebapp(pendingTaskId, "pending")
         )
-        tweet(userId ?? "", req.body.tweet)
+        tweet(userId ?? "", req.body.quote.replace(/^```|```$/g, ""))
           .then((response: string) => {
             socket?.emit(
               "message",
@@ -110,7 +110,7 @@ router.get("/callback", (req, res) => {
         twitterUser.refreshToken = refreshToken
         twitterUser.expiresIn = expiresIn
         setTwitterUserByState(state as string, twitterUser)
-        res.send("You can now safely close this tab.")
+        res.redirect("/")
       }
     )
     .catch((err) =>
