@@ -67,9 +67,8 @@ export const createAndRunThread = async (
   instructions: string,
   metadata: Record<string, unknown>
 ): Promise<string> => {
-  console.log("thread !!!!!!!!!")
-  const thread = await openai.beta.threads.create({ messages })
-  console.log("run !!!!!!!!!")
+  const thread = await openai.beta.threads.create({ messages, metadata })
+  console.log({ thread: thread.id })
   const run = await openai.beta.threads.runs.create(thread.id, {
     assistant_id,
     additional_instructions: instructions,
@@ -79,7 +78,6 @@ export const createAndRunThread = async (
   var loops = 0
   var returnResponse: string | undefined = undefined
   const interval = setInterval(async () => {
-    console.log("retrieve run !!!!!!!!!")
     const checkedRun = await openai.beta.threads.runs.retrieve(
       thread.id,
       run.id
@@ -87,15 +85,14 @@ export const createAndRunThread = async (
     if (checkedRun.status === "completed") {
       clearInterval(interval)
 
-      console.log("message list !!!!!!!!!")
       const threadMessages = await openai.beta.threads.messages.list(thread.id)
       const response = await openai.beta.threads.messages.retrieve(
         thread.id,
         threadMessages.data[0].id
       )
 
-      // @ts-ignore
-      returnResponse = response.content.text.value
+      returnResponse = JSON.stringify((response.content[0] as any).text ?? "")
+      console.log({ responseContent: response.content })
     }
 
     loops++
@@ -112,8 +109,8 @@ export const createAndRunThread = async (
   return returnResponse
 }
 
-export const storeFileForMessages = async (strFile: any) => {
-  const file = await toFile(Buffer.from(strFile))
+export const storeFileForMessages = async (strFile: any, fileName: string) => {
+  const file = await toFile(Buffer.from(strFile), fileName)
   const fileResponse = await openai.files.create({
     file,
     purpose: "assistants",
@@ -124,9 +121,10 @@ export const storeFileForMessages = async (strFile: any) => {
 
 export const storeFileAtAssistant = async (
   strFile: any,
+  fileName: string,
   assistantId: string
 ) => {
-  const fileResponse = await storeFileForMessages(strFile)
+  const fileResponse = await storeFileForMessages(strFile, fileName)
   const response = await openai.beta.assistants.files.create(assistantId, {
     file_id: fileResponse.id,
   })
@@ -144,6 +142,11 @@ export const buildMessage = ({
   return {
     content: textContent,
     role: "user",
-    file_id: fileId,
+    file_ids: [fileId],
+    metadata: {
+      author: "Daniel Febrero",
+      tool: "apapiai",
+      tool_version: "1.0.0",
+    },
   } as ThreadCreateParams.Message
 }

@@ -25,10 +25,11 @@ export const getTradeDecision = async (symbol: string): Promise<string> => {
   const filePromises = [
     storeFileForMessages(
       // @ts-ignore
-      economicCalendarMarkdown.data
+      economicCalendarMarkdown.data,
+      "economic-calendar.md"
     ),
-    storeFileForMessages(JSON.stringify(quotesJson)),
-    storeFileForMessages(technicalIndicatorsJson),
+    storeFileForMessages(JSON.stringify(quotesJson), "quotes.json"),
+    storeFileForMessages(technicalIndicatorsJson, "technical-indicators.json"),
   ]
 
   const filePromiseResolved = await Promise.all(filePromises)
