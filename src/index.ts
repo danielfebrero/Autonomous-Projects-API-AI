@@ -1,5 +1,5 @@
-import dotenv from "dotenv"
-import express, { Express, Request, Response } from "express"
+import "dotenv/config"
+import express, { Express } from "express"
 import bodyParser from "body-parser"
 import SocketIO from "socket.io"
 import cors from "cors"
@@ -18,8 +18,6 @@ import twitterRouter from "./routes/twitter"
 const socketUsers = new Map<string, SocketIO.Socket>()
 
 export const getSocket = (socketUuid: string) => socketUsers.get(socketUuid)
-
-dotenv.config()
 
 // start express
 const app: Express = express()

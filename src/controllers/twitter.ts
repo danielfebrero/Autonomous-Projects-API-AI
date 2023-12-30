@@ -1,5 +1,4 @@
 import TwitterApi from "twitter-api-v2"
-import dotenv from "dotenv"
 
 import {
   getTwitterStateByUserId,
@@ -7,8 +6,6 @@ import {
   getTwitterUserByState,
   setTwitterUserByState,
 } from "../routes/twitter"
-
-dotenv.config()
 
 const twitterClient = new TwitterApi({
   // @ts-ignore

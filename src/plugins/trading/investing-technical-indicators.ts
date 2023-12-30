@@ -33,7 +33,7 @@ export const getTechnicalIndicatorsFromInvestingAndMarketData = async (
         responseFromGPT = await vision({
           base64,
           instruction:
-            "Identify and list the financial trading indicators including moving averages, technical indicators, and pivot points from the image provided. Return as a structured JSON object.",
+            "Identify and list the financial trading indicators including moving averages, technical indicators, and pivot points from the image provided. Return as a structured JSON object and nothing more.",
         })
         resolve(responseFromGPT)
       } catch (error) {
