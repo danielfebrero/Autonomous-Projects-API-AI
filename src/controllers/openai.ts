@@ -99,7 +99,7 @@ export const createAndRunThread = async (
       clearInterval(interval)
       throw new Error("Timeout after 3 minutes")
     }
-  }, 1000 * 5)
+  }, 1000 * 10)
 
   while (returnResponse === undefined) {
     await new Promise((resolve) => setTimeout(resolve, 1000))
@@ -133,15 +133,15 @@ export const storeFileAtAssistant = async (
 
 export const buildMessage = ({
   textContent,
-  fileId,
+  fileIds,
 }: {
   textContent: string
-  fileId: string
+  fileIds: string[]
 }) => {
   return {
     content: textContent,
     role: "user",
-    file_ids: [fileId],
+    file_ids: fileIds,
     metadata: {
       author: "Daniel Febrero",
       tool: "apapiai",

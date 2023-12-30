@@ -30,40 +30,30 @@ export const getTradeDecision = async (symbol: string): Promise<string> => {
       economicCalendarMarkdown.data,
       "economic-calendar.md"
     ),
-    storeFileForMessages(JSON.stringify(quotesJson), "quotes.json"),
-    storeFileForMessages(technicalIndicatorsJson, "technical-indicators.json"),
+    storeFileForMessages(JSON.stringify(quotesJson), "quotes"),
+    storeFileForMessages(technicalIndicatorsJson, "technical-indicators"),
   ]
 
   const filePromiseResolved = await Promise.all(filePromises)
   const messages = [
     buildMessage({
       textContent:
-        "The attached file in this message is the economic calendar of the week of " +
+        "The attached files in this message are the economic calendar of the week, the quotation, and the technical indicators for " +
+        symbol +
+        " now, " +
         new Date().toString(),
-      fileId: filePromiseResolved[0].id,
-    }),
-    buildMessage({
-      textContent:
-        "The attached file in this message is the real-time (" +
-        new Date().toString() +
-        ") quotation of " +
-        symbol,
-      fileId: filePromiseResolved[1].id,
-    }),
-    buildMessage({
-      textContent:
-        "The attached file in this message is the real-time (" +
-        new Date().toString() +
-        ") technical indicators of " +
-        symbol,
-      fileId: filePromiseResolved[2].id,
+      fileIds: [
+        filePromiseResolved[0].id,
+        filePromiseResolved[1].id,
+        filePromiseResolved[2].id,
+      ],
     }),
   ]
 
   const response = await createAndRunThread(
     messages,
     "asst_2z9nK4QztZpUKcgCYIQIP3bc",
-    "Based on the files and data available in the messages and your own files, make a trade decision.",
+    "Check the files and messages of this thread. Also, check the files at assistant level. Then, make a trade decision.",
     {}
   )
 
