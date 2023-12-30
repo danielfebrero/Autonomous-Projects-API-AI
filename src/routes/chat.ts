@@ -15,6 +15,9 @@ export const setAgentResponsesByUser = (userId: string, responses: string[]) =>
 export const getLastAgentResponseByUser = (userId: string) =>
   agentResponsesByUser.get(userId)?.[0]
 
+export const getBeforeLastAgentResponseByUser = (userId: string) =>
+  agentResponsesByUser.get(userId)?.[1]
+
 export const addResponseToAgentResponsesByUser = (
   userId: string,
   response: string

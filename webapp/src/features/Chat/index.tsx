@@ -46,7 +46,7 @@ const Chat: React.FC = () => {
         })
       )
     }
-    scrollToBottom()
+    setTimeout(() => scrollToBottom(), 500)
   }
 
   const sendMessage = async (obj: any) => {

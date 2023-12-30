@@ -7,7 +7,6 @@ import {
   getInsights,
 } from "../controllers/yfinance"
 import { getSocket } from "../"
-import { prepareResponseForWebapp } from "../utils/webapp"
 import { authClient } from "../controllers/auth"
 import { emitMessage } from "../utils/socket"
 

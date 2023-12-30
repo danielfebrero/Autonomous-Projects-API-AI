@@ -6,6 +6,8 @@ import { generate } from "../controllers/vertex"
 import { getSocket } from "../"
 import { authClient } from "../controllers/auth"
 import { emitMessage } from "../utils/socket"
+import { getLastAgentResponseByUser } from "./chat"
+import { includeLastMessage } from "../utils/ai"
 
 const router = express.Router()
 
@@ -18,25 +20,29 @@ router.post("/", (req, res, next) => {
   authClient(req.body.credential, req.body.appId)
     .then(async (userId) => {
       res.send(200)
+      const ai =
+        req.body.ai && req.body.ai.length > 0 ? req.body.ai : "gpt4-turbo"
+
+      var instruction = req.body.instruction
+      if (req.body.reference && req.body.reference === "ton dernier message") {
+        instruction = includeLastMessage(userId as string, instruction, false)
+      }
+      if (req.body.forwarded)
+        instruction = includeLastMessage(userId as string, instruction, true)
 
       const socket = getSocket(req.body.socketUuid)
-      emitMessage(
-        socket,
-        userId as string,
-        `Connecting with ${req.body.ai}...`,
-        "text"
-      )
+      emitMessage(socket, userId as string, `Connecting with ${ai}...`, "text")
 
       const pendingTaskId = uuidv4()
       emitMessage(socket, userId as string, pendingTaskId, "pending")
 
-      AIs[req.body.ai]({ instruction: req.body.instruction })
+      AIs[ai]({ instruction })
         .then((response: any) => {
           emitMessage(
             socket,
             userId as string,
             response.toString(),
-            "text",
+            "markdown",
             pendingTaskId
           )
         })

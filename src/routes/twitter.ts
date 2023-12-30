@@ -5,7 +5,10 @@ import TwitterApi from "twitter-api-v2"
 import { getSocket } from ".."
 import { auth, tweet } from "../controllers/twitter"
 import { authClient } from "../controllers/auth"
-import { getLastAgentResponseByUser } from "./chat"
+import {
+  getLastAgentResponseByUser,
+  getBeforeLastAgentResponseByUser,
+} from "./chat"
 import { emitMessage } from "../utils/socket"
 
 const router = express.Router()
@@ -44,9 +47,11 @@ router.post("/tweet", (req, res, next) => {
 
         const message = req.body.quote
           ? req.body.quote.replace(/^```|```$/g, "")
-          : req.body.quoteReference &&
-            req.body.quoteReference === "last-agent-message"
+          : req.body.reference && req.body.reference === "ton dernier message"
           ? getLastAgentResponseByUser(userId ?? "")
+          : req.body.reference &&
+            req.body.reference === "ton avant-dernier message"
+          ? getBeforeLastAgentResponseByUser(userId ?? "")
           : null
 
         emitMessage(socket, userId as string, "Tweeting...", "text")
@@ -55,7 +60,13 @@ router.post("/tweet", (req, res, next) => {
         emitMessage(socket, userId as string, pendingTaskId, "pending")
 
         if (!message) {
-          emitMessage(socket, userId as string, "No message to tweet", "text")
+          emitMessage(
+            socket,
+            userId as string,
+            "No message to tweet",
+            "text",
+            pendingTaskId
+          )
           return
         }
 

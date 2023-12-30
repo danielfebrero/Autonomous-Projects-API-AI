@@ -40,6 +40,9 @@ export const addToChat = async (
           appId: {
             stringValue: appId,
           },
+          queryTextInput: {
+            stringValue: query,
+          },
         },
       },
     },
