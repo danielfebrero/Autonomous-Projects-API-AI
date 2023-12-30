@@ -92,14 +92,22 @@ const Chat: React.FC = () => {
           })}
         </div>
         <form id="chat-form">
-          <input
+          <textarea
             id="chat-msg"
-            type="text"
             placeholder="Enter Message"
             required
             value={chatTextInput}
             onChange={(e) => dispatch(setChatTextInput(e.target.value))}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                sendMessage(e)
+              }
+            }}
             disabled={user.clientId === undefined}
+            rows={Math.min(
+              Math.max(2, (chatTextInput.match(/\n/g) || []).length),
+              8
+            )}
           />
           <button
             id="chat-submit"
