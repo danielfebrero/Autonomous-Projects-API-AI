@@ -17,13 +17,15 @@
     align-self: flex-end;
     text-align: right;
     border: 1px solid lighten($primary-color, 30%);
+    box-shadow: 0 4px 6px rgba($shadow-color, 0.2);
   }
 
   &.remote-user {
-    background-color: $form-background-color;
+    background-color: darken($form-background-color, 5%);
     align-self: flex-start;
     text-align: left;
     border: 1px solid $form-border-color;
+    box-shadow: 0 4px 6px rgba($shadow-color, 0.2);
   }
 
   .sender-name {

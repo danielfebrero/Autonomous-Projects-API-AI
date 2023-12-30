@@ -1,8 +1,23 @@
 @import '_variables';
 
+@keyframes gradientBackground {
+  0% {
+      background-position: 0% 50%;
+  }
+  50% {
+      background-position: 100% 50%;
+  }
+  100% {
+      background-position: 0% 50%;
+  }
+}
+
 body {
   font-family: $font-stack;
   color: $secondary-color;
+  background: linear-gradient(-45deg, #e6e9f0, #f7f7f7, #e6e9f0, #f7f7f7);
+  background-size: 400% 400%;
+  animation: gradientBackground 15s ease infinite;
 }
 
 button {
@@ -26,7 +41,7 @@ button {
 
 #logo {
   position: absolute;
-  left: 0;
-  top: 0;
-  width: 120px;
+  left: 42px;
+  top: 42px;
+  width: 105px;
 }
