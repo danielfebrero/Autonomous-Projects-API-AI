@@ -1,6 +1,6 @@
 import OpenAI from "openai"
-import { ThreadCreateParams } from "openai/src/resources/beta/threads"
-import { toFile } from "openai/uploads"
+import { ThreadCreateParams } from "../override/openai/src/resources/beta/threads"
+import { toFile } from "../override/openai/uploads"
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,

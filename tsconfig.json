@@ -1,6 +1,6 @@
 {
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "src/**/*.d.ts"],
+  "exclude": ["node_modules", "src/**/*.d.ts", "src/override/**/*"],
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig to read more about this file */
 
