@@ -1,4 +1,5 @@
 import OpenAI from "openai"
+import { ThreadCreateParams } from "openai/src/resources/beta/threads"
 import dotenv from "dotenv"
 
 dotenv.config()
@@ -60,4 +61,43 @@ export const chat = async ({ instruction }: { instruction: string }) => {
   })
 
   return response.choices[0].message.content
+}
+
+export const createAndRunThread = async (
+  messages: ThreadCreateParams.Message[],
+  assistant_id: string,
+  metadata: Record<string, unknown>,
+  instructions: string
+) => {
+  const thread = await openai.beta.threads.create({ messages, metadata })
+  const run = await openai.beta.threads.runs.create(thread.id, {
+    assistant_id,
+    additional_instructions: instructions,
+  })
+
+  var loops = 0
+  const interval = setInterval(async () => {
+    const checkedRun = await openai.beta.threads.runs.retrieve(
+      thread.id,
+      run.id
+    )
+    if (checkedRun.status === "completed") {
+      clearInterval(interval)
+
+      const threadMessages = await openai.beta.threads.messages.list(thread.id)
+      const response = await openai.beta.threads.messages.retrieve(
+        thread.id,
+        threadMessages.data[0].id
+      )
+
+      // @ts-ignore
+      return response.content.text.value
+    }
+
+    loops++
+    if (loops > 36) {
+      clearInterval(interval)
+      throw new Error("Timeout after 3 minutes")
+    }
+  }, 1000 * 5)
 }

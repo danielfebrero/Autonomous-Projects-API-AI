@@ -6,7 +6,6 @@ import { generate } from "../controllers/vertex"
 import { getSocket } from "../"
 import { authClient } from "../controllers/auth"
 import { emitMessage } from "../utils/socket"
-import { getLastAgentResponseByUser } from "./chat"
 import { includeLastMessage } from "../utils/ai"
 
 const router = express.Router()
