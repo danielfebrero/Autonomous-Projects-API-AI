@@ -91,8 +91,7 @@ export const createAndRunThread = async (
         threadMessages.data[0].id
       )
 
-      returnResponse = JSON.stringify((response.content[0] as any).text ?? "")
-      console.log({ responseContent: response.content })
+      returnResponse = (response.content[0] as any).text.value ?? ""
     }
 
     loops++

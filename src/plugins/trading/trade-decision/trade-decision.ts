@@ -8,7 +8,9 @@ import { getTechnicalIndicatorsFromInvestingAndMarketData } from "../investing-t
 
 export const getTradeDecision = async (symbol: string): Promise<string> => {
   const symbolForInvesting =
-    symbol.slice(0, 3).toLowerCase() + "-" + symbol.slice(3).toLowerCase()
+    symbol.length === 6
+      ? symbol.slice(0, 3).toLowerCase() + "-" + symbol.slice(3).toLowerCase()
+      : symbol
 
   const promises = [
     getEconomicCalendarFromTE(),
@@ -36,18 +38,23 @@ export const getTradeDecision = async (symbol: string): Promise<string> => {
   const messages = [
     buildMessage({
       textContent:
-        "The attached file in this message is the economic calendar of this week",
+        "The attached file in this message is the economic calendar of the week of " +
+        new Date().toString(),
       fileId: filePromiseResolved[0].id,
     }),
     buildMessage({
       textContent:
-        "The attached file in this message is the real-time quotation of " +
+        "The attached file in this message is the real-time (" +
+        new Date().toString() +
+        ") quotation of " +
         symbol,
       fileId: filePromiseResolved[1].id,
     }),
     buildMessage({
       textContent:
-        "The attached file in this message is the real-time technical indicators of " +
+        "The attached file in this message is the real-time (" +
+        new Date().toString() +
+        ") technical indicators of " +
         symbol,
       fileId: filePromiseResolved[2].id,
     }),
