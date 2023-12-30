@@ -71,6 +71,7 @@ export const createAndRunThread = async (
   const run = await openai.beta.threads.runs.create(thread.id, {
     assistant_id,
     additional_instructions: instructions,
+    tools: [{type: "retrieval"}]
   })
 
   var loops = 0
