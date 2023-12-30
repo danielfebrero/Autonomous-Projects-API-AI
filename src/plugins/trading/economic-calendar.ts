@@ -2,7 +2,9 @@ import { NodeHtmlMarkdown } from "node-html-markdown"
 
 import { goto } from "../../controllers/browse"
 
-export const getEconomicCalendarFromInvesting = async () => {
+export const getEconomicCalendarFromInvesting = async (): Promise<{
+  data: string
+}> => {
   const { page, browser } = await goto(
     `https://www.investing.com/economic-calendar/`
   )

@@ -1,5 +1,6 @@
 import OpenAI from "openai"
 import { ThreadCreateParams } from "openai/src/resources/beta/threads"
+import { toFile } from "openai/src/uploads"
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -97,4 +98,21 @@ export const createAndRunThread = async (
       throw new Error("Timeout after 3 minutes")
     }
   }, 1000 * 5)
+}
+
+export const storeFileAtAssistant = async (
+  strFile: any,
+  assistantId: string
+) => {
+  const file = await toFile(Buffer.from(strFile))
+  const fileResponse = await openai.files.create({
+    file,
+    purpose: "assistants",
+  })
+
+  const response = await openai.beta.assistants.files.create(assistantId, {
+    file_id: fileResponse.id,
+  })
+
+  return response.id
 }
