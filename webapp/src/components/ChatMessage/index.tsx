@@ -19,6 +19,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   senderIsLocalUser,
   senderName,
 }) => {
+  const copyToClipboard = () => navigator.clipboard.writeText(message.value)
+
   return (
     <div
       className={`chat-message ${
@@ -58,6 +60,12 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           <div className="loader" id={"pending_" + message.value}></div>
         </div>
       )}
+      <img
+        src="/svg/copy.svg"
+        alt="Copy"
+        className="copy-icon"
+        onClick={copyToClipboard}
+      />
     </div>
   )
 }
