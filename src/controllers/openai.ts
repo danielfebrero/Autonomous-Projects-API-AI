@@ -64,8 +64,8 @@ export const chat = async ({ instruction }: { instruction: string }) => {
 export const createAndRunThread = async (
   messages: ThreadCreateParams.Message[],
   assistant_id: string,
+  instructions: string,
   metadata: Record<string, unknown>,
-  instructions: string
 ) => {
   const thread = await openai.beta.threads.create({ messages, metadata })
   const run = await openai.beta.threads.runs.create(thread.id, {
@@ -100,19 +100,36 @@ export const createAndRunThread = async (
   }, 1000 * 5)
 }
 
-export const storeFileAtAssistant = async (
-  strFile: any,
-  assistantId: string
-) => {
+export const storeFileForMessages = async (strFile: any) => {
   const file = await toFile(Buffer.from(strFile))
   const fileResponse = await openai.files.create({
     file,
     purpose: "assistants",
   })
 
+  return fileResponse
+}
+
+export const storeFileAtAssistant = async (
+  strFile: any,
+  assistantId: string
+) => {
+  const fileResponse = await storeFileForMessages(strFile)
   const response = await openai.beta.assistants.files.create(assistantId, {
     file_id: fileResponse.id,
   })
 
   return response.id
 }
+
+export const buildMessage = ({textContent, fileId}: {textContent: string, fileId: string) => {
+  return {
+    content: textContent,
+    role: 'user',
+    file_id: fileId,
+    metadata: {
+      author: "Daniel Febrero",
+      tool: "apapia"
+    }
+  } as ThreadCreateParams.Message
+} 
