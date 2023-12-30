@@ -8,99 +8,109 @@ import {
 } from "../controllers/yfinance"
 import { getSocket } from "../"
 import { prepareResponseForWebapp } from "../utils/webapp"
+import { authClient } from "../controllers/auth"
+import { emitMessage } from "../utils/socket"
 
 const router = express.Router()
 
 router.post("/historical", (req, res, next) => {
-  res.send(200)
+  authClient(req.body.credential, req.body.appId)
+    .then(async (userId) => {
+      res.send(200)
 
-  const socket = getSocket(req.body.socketUuid)
-  socket?.emit(
-    "message",
-    prepareResponseForWebapp("Fetching historical data...", "text")
-  )
-
-  const pendingTaskId = uuidv4()
-  socket?.emit("message", prepareResponseForWebapp(pendingTaskId, "pending"))
-
-  getHistoricalData({
-    symbol: req.body.symbol,
-    period1: req.body.period1,
-    period2: req.body.period2,
-  })
-    .then((response) => {
-      socket?.emit(
-        "message",
-        prepareResponseForWebapp(
-          JSON.stringify(response),
-          "json",
-          pendingTaskId
-        )
+      const socket = getSocket(req.body.socketUuid)
+      emitMessage(
+        socket,
+        userId as string,
+        "Fetching historical data...",
+        "text"
       )
+
+      const pendingTaskId = uuidv4()
+      emitMessage(socket, userId as string, pendingTaskId, "pending")
+
+      getHistoricalData({
+        symbol: req.body.symbol,
+        period1: req.body.period1,
+        period2: req.body.period2,
+      })
+        .then((response) => {
+          emitMessage(
+            socket,
+            userId as string,
+            JSON.stringify(response),
+            "json",
+            pendingTaskId
+          )
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     })
-    .catch((error) => {
-      console.log(error)
-    })
+    .catch(console.log)
 })
 
 router.post("/quote", (req, res, next) => {
-  res.send(200)
+  authClient(req.body.credential, req.body.appId)
+    .then(async (userId) => {
+      res.send(200)
 
-  const socket = getSocket(req.body.socketUuid)
-  socket?.emit("message", prepareResponseForWebapp("Fetching quote...", "text"))
+      const socket = getSocket(req.body.socketUuid)
+      emitMessage(socket, userId as string, "Fetching quote...", "text")
 
-  const pendingTaskId = uuidv4()
-  socket?.emit("message", prepareResponseForWebapp(pendingTaskId, "pending"))
+      const pendingTaskId = uuidv4()
+      emitMessage(socket, userId as string, pendingTaskId, "pending")
 
-  getQuote({
-    symbol: req.body.symbol,
-  })
-    .then((response) => {
-      socket?.emit(
-        "message",
-        prepareResponseForWebapp(
-          JSON.stringify(response),
-          "json",
-          pendingTaskId
-        )
-      )
+      getQuote({
+        symbol: req.body.symbol,
+      })
+        .then((response) => {
+          emitMessage(
+            socket,
+            userId as string,
+            JSON.stringify(response),
+            "json",
+            pendingTaskId
+          )
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     })
-    .catch((error) => {
-      console.log(error)
-    })
+    .catch(console.log)
 })
 
 router.post("/insights", (req, res, next) => {
-  res.send(200)
+  authClient(req.body.credential, req.body.appId)
+    .then(async (userId) => {
+      res.send(200)
 
-  const socket = getSocket(req.body.socketUuid)
-  socket?.emit(
-    "message",
-    prepareResponseForWebapp("Fetching insights...", "text")
-  )
+      const socket = getSocket(req.body.socketUuid)
+      emitMessage(socket, userId as string, "Fetching insights...", "text")
 
-  const pendingTaskId = uuidv4()
-  socket?.emit("message", prepareResponseForWebapp(pendingTaskId, "pending"))
+      const pendingTaskId = uuidv4()
+      emitMessage(socket, userId as string, pendingTaskId, "pending")
 
-  getInsights({
-    symbol: req.body.symbol,
-    lang: req.body.lang,
-    reportsCount: req.body.reportsCount,
-    region: req.body.region,
-  })
-    .then((response) => {
-      socket?.emit(
-        "message",
-        prepareResponseForWebapp(
-          JSON.stringify(response),
-          "json",
-          pendingTaskId
-        )
-      )
+      getInsights({
+        symbol: req.body.symbol,
+        lang: req.body.lang,
+        reportsCount: req.body.reportsCount,
+        region: req.body.region,
+      })
+        .then((response) => {
+          emitMessage(
+            socket,
+            userId as string,
+            JSON.stringify(response),
+            "json",
+            pendingTaskId
+          )
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     })
-    .catch((error) => {
-      console.log(error)
-    })
+    .catch(console.log)
 })
 
 export default router

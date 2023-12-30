@@ -19,3 +19,5 @@
 - Utilise le plugin calendrier économique
 
 - tweet \`\`\`i can now tweet using NLP on apapiai. this tweet was sent through dialogflow cx.```
+
+- tweet ton dernier message

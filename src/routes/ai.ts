@@ -4,7 +4,8 @@ import { v4 as uuidv4 } from "uuid"
 import { chat } from "../controllers/openai"
 import { generate } from "../controllers/vertex"
 import { getSocket } from "../"
-import { prepareResponseForWebapp } from "../utils/webapp"
+import { authClient } from "../controllers/auth"
+import { emitMessage } from "../utils/socket"
 
 const router = express.Router()
 
@@ -14,27 +15,36 @@ const AIs: any = {
 }
 
 router.post("/", (req, res, next) => {
-  res.send(200)
+  authClient(req.body.credential, req.body.appId)
+    .then(async (userId) => {
+      res.send(200)
 
-  const socket = getSocket(req.body.socketUuid)
-  socket?.emit(
-    "message",
-    prepareResponseForWebapp(`Connecting with ${req.body.ai}...`, "text")
-  )
-
-  const pendingTaskId = uuidv4()
-  socket?.emit("message", prepareResponseForWebapp(pendingTaskId, "pending"))
-
-  AIs[req.body.ai]({ instruction: req.body.instruction })
-    .then((response: any) => {
-      socket?.emit(
-        "message",
-        prepareResponseForWebapp(response.toString(), "text", pendingTaskId)
+      const socket = getSocket(req.body.socketUuid)
+      emitMessage(
+        socket,
+        userId as string,
+        `Connecting with ${req.body.ai}...`,
+        "text"
       )
+
+      const pendingTaskId = uuidv4()
+      emitMessage(socket, userId as string, pendingTaskId, "pending")
+
+      AIs[req.body.ai]({ instruction: req.body.instruction })
+        .then((response: any) => {
+          emitMessage(
+            socket,
+            userId as string,
+            response.toString(),
+            "text",
+            pendingTaskId
+          )
+        })
+        .catch((err: any) => {
+          console.log(err)
+        })
     })
-    .catch((err: any) => {
-      console.log(err)
-    })
+    .catch(console.log)
 })
 
 export default router

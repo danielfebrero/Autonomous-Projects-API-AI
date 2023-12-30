@@ -3,9 +3,10 @@ import { v4 as uuidv4 } from "uuid"
 import TwitterApi from "twitter-api-v2"
 
 import { getSocket } from ".."
-import { prepareResponseForWebapp } from "../utils/webapp"
 import { auth, tweet } from "../controllers/twitter"
 import { authClient } from "../controllers/auth"
+import { getLastAgentResponseByUser } from "./chat"
+import { emitMessage } from "../utils/socket"
 
 const router = express.Router()
 
@@ -31,33 +32,41 @@ router.post("/tweet", (req, res, next) => {
       if (!loggedClient) {
         const redirectUrl = auth(userId as string)
 
-        socket?.emit(
-          "message",
-          prepareResponseForWebapp(
-            "[Login to twitter](" + redirectUrl + ")",
-            "link"
-          )
+        emitMessage(
+          socket,
+          userId as string,
+          "[Login to twitter](" + redirectUrl + ")",
+          "link"
         )
         res.send(200)
       } else {
         res.send(200)
 
-        socket?.emit("message", prepareResponseForWebapp("Tweeting...", "text"))
+        const message = req.body.quote
+          ? req.body.quote.replace(/^```|```$/g, "")
+          : req.body.quoteReference &&
+            req.body.quoteReference === "last-agent-message"
+          ? getLastAgentResponseByUser(userId ?? "")
+          : null
+
+        emitMessage(socket, userId as string, "Tweeting...", "text")
 
         const pendingTaskId = uuidv4()
-        socket?.emit(
-          "message",
-          prepareResponseForWebapp(pendingTaskId, "pending")
-        )
-        tweet(userId ?? "", req.body.quote.replace(/^```|```$/g, ""))
+        emitMessage(socket, userId as string, pendingTaskId, "pending")
+
+        if (!message) {
+          emitMessage(socket, userId as string, "No message to tweet", "text")
+          return
+        }
+
+        tweet(userId ?? "", message)
           .then((response: string) => {
-            socket?.emit(
-              "message",
-              prepareResponseForWebapp(
-                "Tweeted: " + response,
-                "text",
-                pendingTaskId
-              )
+            emitMessage(
+              socket,
+              userId as string,
+              "Tweeted: " + response,
+              "text",
+              pendingTaskId
             )
           })
           .catch((error) => {
