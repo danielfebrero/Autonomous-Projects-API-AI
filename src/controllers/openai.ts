@@ -1,6 +1,6 @@
 import OpenAI from "openai"
 import { ThreadCreateParams } from "openai/src/resources/beta/threads"
-import { toFile } from "openai/src/uploads"
+import { toFile } from "openai/uploads"
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -65,16 +65,17 @@ export const createAndRunThread = async (
   messages: ThreadCreateParams.Message[],
   assistant_id: string,
   instructions: string,
-  metadata: Record<string, unknown>,
-) => {
+  metadata: Record<string, unknown>
+): Promise<string> => {
   const thread = await openai.beta.threads.create({ messages, metadata })
   const run = await openai.beta.threads.runs.create(thread.id, {
     assistant_id,
     additional_instructions: instructions,
-    tools: [{type: "retrieval"}]
+    tools: [{ type: "retrieval" }],
   })
 
   var loops = 0
+  var returnResponse: string | undefined = undefined
   const interval = setInterval(async () => {
     const checkedRun = await openai.beta.threads.runs.retrieve(
       thread.id,
@@ -90,7 +91,7 @@ export const createAndRunThread = async (
       )
 
       // @ts-ignore
-      return response.content.text.value
+      returnResponse = response.content.text.value
     }
 
     loops++
@@ -99,6 +100,12 @@ export const createAndRunThread = async (
       throw new Error("Timeout after 3 minutes")
     }
   }, 1000 * 5)
+
+  while (returnResponse === undefined) {
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+  }
+
+  return returnResponse
 }
 
 export const storeFileForMessages = async (strFile: any) => {
@@ -123,14 +130,20 @@ export const storeFileAtAssistant = async (
   return response.id
 }
 
-export const buildMessage = ({textContent, fileId}: {textContent: string, fileId: string) => {
+export const buildMessage = ({
+  textContent,
+  fileId,
+}: {
+  textContent: string
+  fileId: string
+}) => {
   return {
     content: textContent,
-    role: 'user',
+    role: "user",
     file_id: fileId,
     metadata: {
       author: "Daniel Febrero",
-      tool: "apapia"
-    }
+      tool: "apapia",
+    },
   } as ThreadCreateParams.Message
-} 
+}

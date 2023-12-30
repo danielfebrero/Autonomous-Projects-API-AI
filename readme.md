@@ -45,6 +45,8 @@ Once you have cloned the repository, you can install the dependencies:
 npm install
 ```
 
+You will have to fix a type in openai node_module, line 190 of this file: node_modules/openai/src/streaming.ts: ```async pull(ctrl: any) {```
+
 ## Usage
 
 1) You need to setup gcloud cli and enable many APIs, good luck

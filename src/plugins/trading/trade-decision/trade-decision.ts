@@ -6,7 +6,7 @@ import {
 import { getEconomicCalendarFromDailyFX } from "../economic-calendar"
 import { getTechnicalIndicatorsFromInvestingAndMarketData } from "../investing-technical-indicators"
 
-export const tradeDecision = async (symbol: string) => {
+export const getTradeDecision = async (symbol: string): Promise<string> => {
   const symbolForInvesting =
     symbol.slice(0, 3).toLowerCase() + "-" + symbol.slice(3).toLowerCase()
 
