@@ -3,27 +3,19 @@ import { emitMessage } from "../../utils/socket"
 
 export const runCommand = ({
   command,
-  args,
   socket,
   userId,
+  pendingTaskId,
 }: {
   command: string
-  args: string[]
   socket: any
   userId: string
+  pendingTaskId: string
 }) => {
-  var onDataStdoutResponseUuid: any
   spawnCommand({
     command,
-    args,
     onDataStdout: (data) => {
-      onDataStdoutResponseUuid = emitMessage(
-        socket,
-        userId,
-        data,
-        "buffer",
-        onDataStdoutResponseUuid
-      )
+      emitMessage(socket, userId, data, "buffer", pendingTaskId)
     },
   })
 }

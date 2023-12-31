@@ -49,6 +49,26 @@ export const chatSlice = createSlice({
           ) {
             replaced = true
             return [...acc, action.payload.message]
+          } else if (
+            v.content.type === "buffer" &&
+            v.responseUuid === action.payload.responseUuid
+          ) {
+            replaced = true
+            return [
+              ...acc,
+              {
+                ...v,
+                ...{
+                  content: {
+                    type: v.content.type,
+                    value:
+                      v.content.value +
+                      "\n" +
+                      action.payload.message.content.value,
+                  },
+                },
+              },
+            ]
           } else {
             return [...acc, v]
           }

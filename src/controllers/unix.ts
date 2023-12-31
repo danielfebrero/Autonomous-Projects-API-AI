@@ -2,20 +2,18 @@ import { spawn } from "child_process"
 
 export const spawnCommand = ({
   command,
-  args,
   onDataStdout,
   onDataStderr,
   onError,
   onClose,
 }: {
   command: string
-  args: string[]
   onDataStdout?: (data: Buffer) => void
   onDataStderr?: (data: Buffer) => void
   onError?: (error: Error) => void
   onClose?: (code: number) => void
 }) => {
-  const child = spawn(command, args)
+  const child = spawn(command, { shell: true })
   if (onDataStdout)
     child.stdout.on("data", onDataStdout as (...args: any[]) => void)
   if (onDataStderr)

@@ -22,6 +22,7 @@ export type ChatMessage = {
   }
   sender?: string
   timestamp: number
+  responseUuid?: string
 }
 
 export interface ChatState {

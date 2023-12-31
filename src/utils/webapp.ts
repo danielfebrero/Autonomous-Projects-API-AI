@@ -5,7 +5,7 @@ export const prepareResponseForWebapp = (
 ) => {
   return {
     content: {
-      value: response,
+      value: Buffer.isBuffer(response) ? response.toString() : response,
       type,
     },
     sender: "apapiai",

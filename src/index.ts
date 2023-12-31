@@ -14,6 +14,7 @@ import pluginsRouter from "./routes/plugins"
 import openaiRouter from "./routes/openai"
 import aiRouter from "./routes/ai"
 import twitterRouter from "./routes/twitter"
+import unixRouter from "./routes/unix"
 
 const socketUsers = new Map<string, SocketIO.Socket>()
 
@@ -42,6 +43,7 @@ app.use("/plugins", pluginsRouter)
 app.use("/openai", openaiRouter)
 app.use("/ai", aiRouter)
 app.use("/twitter", twitterRouter)
+app.use("/unix", unixRouter)
 
 // Handles any requests that don't match the ones above
 app.get("*", (req, res) => {
