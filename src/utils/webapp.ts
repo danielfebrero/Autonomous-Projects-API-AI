@@ -1,7 +1,7 @@
 export const prepareResponseForWebapp = (
-  response: string,
+  response: string | Buffer,
   type: string,
-  pendingTaskId?: string
+  responseUuid?: string
 ) => {
   return {
     content: {
@@ -10,6 +10,6 @@ export const prepareResponseForWebapp = (
     },
     sender: "apapiai",
     timestamp: Date.now(),
-    pendingTaskId,
+    responseUuid,
   }
 }

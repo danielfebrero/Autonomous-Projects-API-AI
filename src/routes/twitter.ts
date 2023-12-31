@@ -57,7 +57,13 @@ router.post("/tweet", (req, res, next) => {
         emitMessage(socket, userId as string, "Tweeting...", "text")
 
         const pendingTaskId = uuidv4()
-        emitMessage(socket, userId as string, pendingTaskId, "pending")
+        emitMessage(
+          socket,
+          userId as string,
+          pendingTaskId,
+          "pending",
+          pendingTaskId
+        )
 
         if (!message) {
           emitMessage(

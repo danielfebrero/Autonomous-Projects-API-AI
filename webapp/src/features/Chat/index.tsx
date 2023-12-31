@@ -5,7 +5,7 @@ import useSocket from "../../hooks/useSocket"
 import {
   setChatTextInput,
   addMessage,
-  replaceMessage,
+  replaceOrAddMessage,
 } from "../../reducers/chat"
 import ChatMessage from "../../components/ChatMessage"
 import {
@@ -30,12 +30,12 @@ const Chat: React.FC = () => {
   const { isConnected, socketUuid, socket } = useSocket()
 
   const receivedMessageFromServer = (t: ChatResponseFromServer) => {
-    if (t.pendingTaskId) {
+    if (t.responseUuid) {
       dispatch(
-        replaceMessage({
+        replaceOrAddMessage({
           message: buildChatMessage(t),
           user: undefined,
-          pendingTaskId: t.pendingTaskId,
+          responseUuid: t.responseUuid,
         })
       )
     } else {
@@ -46,7 +46,7 @@ const Chat: React.FC = () => {
         })
       )
     }
-    setTimeout(() => scrollToBottom(), 500)
+    setTimeout(() => scrollToBottom(), 1000)
   }
 
   const sendMessage = async (obj: any) => {

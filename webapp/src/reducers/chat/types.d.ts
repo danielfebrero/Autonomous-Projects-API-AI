@@ -11,7 +11,7 @@ export type ChatConversation = {
 export type ChatMessagePayload = { message: ChatMessage; user?: UserState }
 
 export type ReplaceChatMessagePayload = ChatMessagePayload & {
-  pendingTaskId: string
+  responseUuid: string
 }
 
 export type ChatMessage = {
@@ -41,7 +41,7 @@ export type ChatResponseFromServer = {
   }
   sender?: string
   timestamp?: number
-  pendingTaskId?: string
+  responseUuid?: string
 }
 
 export type MessageTypes =
@@ -51,3 +51,4 @@ export type MessageTypes =
   | "pending"
   | "link"
   | "markdown"
+  | "buffer"

@@ -26,10 +26,22 @@ router.post(
         )
 
         const pendingTaskId = uuidv4()
-        emitMessage(socket, userId as string, pendingTaskId, "pending")
+        emitMessage(
+          socket,
+          userId as string,
+          pendingTaskId,
+          "pending",
+          pendingTaskId
+        )
 
         const pendingTaskId2 = uuidv4()
-        emitMessage(socket, userId as string, pendingTaskId2, "pending")
+        emitMessage(
+          socket,
+          userId as string,
+          pendingTaskId2,
+          "pending",
+          pendingTaskId2
+        )
 
         getTechnicalIndicatorsFromInvestingAndMarketData(req.body.symbol)
           .then((response) => {
@@ -69,7 +81,13 @@ router.post("/trading/economic-calendar", (req, res, next) => {
       )
 
       const pendingTaskId = uuidv4()
-      emitMessage(socket, userId as string, pendingTaskId, "pending")
+      emitMessage(
+        socket,
+        userId as string,
+        pendingTaskId,
+        "pending",
+        pendingTaskId
+      )
 
       getEconomicCalendarFromTE()
         .then((response) => {
@@ -101,7 +119,13 @@ router.post("/trading/trade-decision", (req, res, next) => {
       )
 
       const pendingTaskId = uuidv4()
-      emitMessage(socket, userId as string, pendingTaskId, "pending")
+      emitMessage(
+        socket,
+        userId as string,
+        pendingTaskId,
+        "pending",
+        pendingTaskId
+      )
 
       getTradeDecision(req.body.symbol)
         .then((response) => {

@@ -7,7 +7,7 @@ import "./style.scss"
 type ChatMessageProps = {
   message: {
     type: MessageTypes
-    value: string
+    value: string | Buffer
   }
   senderIsLocalUser: boolean
   senderName: string
@@ -19,7 +19,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   senderIsLocalUser,
   senderName,
 }) => {
-  const copyToClipboard = () => navigator.clipboard.writeText(message.value)
+  const copyToClipboard = () =>
+    navigator.clipboard.writeText(
+      Buffer.isBuffer(message.value) ? message.value.toString() : message.value
+    )
 
   return (
     <div
@@ -33,9 +36,15 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
         <div className="message-text">{message.value}</div>
       )}
 
+      {message.type === "buffer" && (
+        <div className="message-text">
+          {(message.value as Buffer).toString()}
+        </div>
+      )}
+
       {(message.type === "link" || message.type === "markdown") && (
         <div className="message-text">
-          <Markdown>{message.value}</Markdown>
+          <Markdown>{message.value as string}</Markdown>
         </div>
       )}
 
@@ -51,7 +60,11 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
 
       {message.type === "json" && (
         <div className="message-text">
-          {<pre>{JSON.stringify(JSON.parse(message.value), null, 2)}</pre>}
+          {
+            <pre>
+              {JSON.stringify(JSON.parse(message.value as string), null, 2)}
+            </pre>
+          }
         </div>
       )}
 
@@ -60,6 +73,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
           <div className="loader" id={"pending_" + message.value}></div>
         </div>
       )}
+
       <img
         src="/svg/copy.svg"
         alt="Copy"

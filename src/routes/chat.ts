@@ -1,33 +1,59 @@
 import express from "express"
-import { authClient } from "../controllers/auth"
+import { v4 as uuidv4 } from "uuid"
 
+import { authClient } from "../controllers/auth"
 import { addToChat } from "../controllers/dialogflow"
 import { prepareResponseForWebapp } from "../utils/webapp"
 
-const agentResponsesByUser = new Map<string, string[]>()
+type AgentResponseType = { uuid: string; value: string | Buffer }
+
+const agentResponsesByUser = new Map<string, AgentResponseType[]>()
 
 export const getAgentResponsesByUser = (userId: string) =>
   agentResponsesByUser.get(userId)
 
-export const setAgentResponsesByUser = (userId: string, responses: string[]) =>
-  agentResponsesByUser.set(userId, responses)
+export const setAgentResponsesByUser = (
+  userId: string,
+  responses: AgentResponseType[]
+) => agentResponsesByUser.set(userId, responses)
 
 export const getLastAgentResponseByUser = (userId: string) =>
-  agentResponsesByUser.get(userId)?.[0]
+  agentResponsesByUser.get(userId)?.[0].value
 
 export const getBeforeLastAgentResponseByUser = (userId: string) =>
-  agentResponsesByUser.get(userId)?.[1]
+  agentResponsesByUser.get(userId)?.[1].value
 
 export const addResponseToAgentResponsesByUser = (
   userId: string,
-  response: string
+  response: string | Buffer,
+  responseUuid?: string
 ) => {
   const responses = agentResponsesByUser.get(userId)
-  if (responses) {
-    responses.unshift(response)
-  } else {
-    agentResponsesByUser.set(userId, [response])
+
+  if (responseUuid && Buffer.isBuffer(response)) {
+    const index = responses?.findIndex((r) => r.uuid === responseUuid)
+    const newValue = index
+      ? Buffer.concat([
+          response,
+          Buffer.from(responses?.[index]?.value as Buffer),
+        ])
+      : response
+    index
+      ? responses?.splice(index, 1, { uuid: responseUuid, value: newValue })
+      : responses?.unshift({ uuid: responseUuid, value: newValue })
+
+    return responseUuid
   }
+
+  const uuid = responseUuid ?? uuidv4()
+
+  if (responses) {
+    responses.unshift({ uuid, value: response })
+  } else {
+    agentResponsesByUser.set(userId, [{ uuid, value: response }])
+  }
+
+  return uuid
 }
 
 const router = express.Router()

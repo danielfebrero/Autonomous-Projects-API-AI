@@ -26,7 +26,13 @@ router.post("/historical", (req, res, next) => {
       )
 
       const pendingTaskId = uuidv4()
-      emitMessage(socket, userId as string, pendingTaskId, "pending")
+      emitMessage(
+        socket,
+        userId as string,
+        pendingTaskId,
+        "pending",
+        pendingTaskId
+      )
 
       getHistoricalData({
         symbol: req.body.symbol,
@@ -58,7 +64,13 @@ router.post("/quote", (req, res, next) => {
       emitMessage(socket, userId as string, "Fetching quote...", "text")
 
       const pendingTaskId = uuidv4()
-      emitMessage(socket, userId as string, pendingTaskId, "pending")
+      emitMessage(
+        socket,
+        userId as string,
+        pendingTaskId,
+        "pending",
+        pendingTaskId
+      )
 
       getQuote({
         symbol: req.body.symbol,
@@ -88,7 +100,13 @@ router.post("/insights", (req, res, next) => {
       emitMessage(socket, userId as string, "Fetching insights...", "text")
 
       const pendingTaskId = uuidv4()
-      emitMessage(socket, userId as string, pendingTaskId, "pending")
+      emitMessage(
+        socket,
+        userId as string,
+        pendingTaskId,
+        "pending",
+        pendingTaskId
+      )
 
       getInsights({
         symbol: req.body.symbol,

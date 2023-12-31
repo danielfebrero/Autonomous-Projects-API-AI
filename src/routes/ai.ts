@@ -33,7 +33,13 @@ router.post("/", (req, res, next) => {
       emitMessage(socket, userId as string, `Connecting with ${ai}...`, "text")
 
       const pendingTaskId = uuidv4()
-      emitMessage(socket, userId as string, pendingTaskId, "pending")
+      emitMessage(
+        socket,
+        userId as string,
+        pendingTaskId,
+        "pending",
+        pendingTaskId
+      )
 
       AIs[ai]({ instruction })
         .then((response: any) => {

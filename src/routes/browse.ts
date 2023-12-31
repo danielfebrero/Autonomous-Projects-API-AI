@@ -28,7 +28,13 @@ router.post("/screenshot", (req, res, next) => {
       )
 
       const pendingTaskId = uuidv4()
-      emitMessage(socket, userId as string, pendingTaskId, "pending")
+      emitMessage(
+        socket,
+        userId as string,
+        pendingTaskId,
+        "pending",
+        pendingTaskId
+      )
 
       retrieve({ url: req.body.url, selector: req.body.selector ?? "html" })
         .then((response) => {
