@@ -17,5 +17,14 @@ export const runCommand = ({
     onDataStdout: (data) => {
       emitMessage(socket, userId, data, "buffer", pendingTaskId)
     },
+    onClose: (code) => {
+      emitMessage(
+        socket,
+        userId,
+        Buffer.from(`exited with code ${code}`),
+        "buffer",
+        pendingTaskId
+      )
+    },
   })
 }

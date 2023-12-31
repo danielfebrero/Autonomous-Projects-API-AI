@@ -45,8 +45,6 @@ Once you have cloned the repository, you can install the dependencies:
 npm install
 ```
 
-You will have to fix a type in openai node_module, line 190 of this file: node_modules/openai/src/streaming.ts: ```async pull(ctrl: any) {```
-
 ## Usage
 
 1) You need to setup gcloud cli and enable many APIs, good luck
@@ -63,7 +61,13 @@ cd webapp
 npm start
 ```
 
-Access the app: http://localhost:8080/
+Access the app: http://localhost:3000/
+
+You can query the API with postman on http://localhost:8080
+
+A regular POST body contains at least: socketUuid, credential, appId. You can capture them in the dev console.
+
+When sending a reauest on Postman, you will see feedback in the app if UI is running on localhost.
 
 ## Contributing
 
