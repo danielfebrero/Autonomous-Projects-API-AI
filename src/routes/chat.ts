@@ -28,31 +28,31 @@ export const addResponseToAgentResponsesByUser = (
   response: string | Buffer,
   responseUuid?: string
 ) => {
-  const responses = agentResponsesByUser.get(userId)
+  const responses = agentResponsesByUser.get(userId) ?? []
+  const index = responses.findIndex((r) => r.uuid === responseUuid)
+  const uuid = responseUuid ?? uuidv4()
 
   if (responseUuid && Buffer.isBuffer(response)) {
-    const index = responses?.findIndex((r) => r.uuid === responseUuid)
     const newValue = index
       ? Buffer.concat([
           response,
-          Buffer.from(responses?.[index]?.value as Buffer),
+          Buffer.from(responses[index]?.value as Buffer),
         ])
       : response
     index
-      ? responses?.splice(index, 1, { uuid: responseUuid, value: newValue })
-      : responses?.unshift({ uuid: responseUuid, value: newValue })
+      ? responses.splice(index, 1, { uuid: responseUuid, value: newValue })
+      : responses.unshift({ uuid: responseUuid, value: newValue })
 
     return responseUuid
   }
 
-  const uuid = responseUuid ?? uuidv4()
-
-  if (responses) {
-    responses.unshift({ uuid, value: response })
+  if (responseUuid && index > -1) {
+    responses.splice(index, 1, { uuid: responseUuid, value: response })
   } else {
-    agentResponsesByUser.set(userId, [{ uuid, value: response }])
+    responses.unshift({ uuid, value: response })
   }
 
+  agentResponsesByUser.set(userId, responses)
   return uuid
 }
 
