@@ -14,10 +14,12 @@
 
 - screenshot of html of https://actions.darkeccho.com/privacy-policy
 
-- Utilise le plugin technical-indicators et montre moi la data de eur-usd
+- Montre moi la technical analysis pour EURUSD
 
 - Utilise le plugin calendrier économique
 
 - tweet \`\`\`i can now tweet using NLP on apapiai. this tweet was sent through dialogflow cx.```
 
 - tweet ton dernier message
+
+- Montre moi la trade-decision pour EURUSD

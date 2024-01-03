@@ -67,7 +67,7 @@ You can query the API with postman on http://localhost:8080
 
 A regular POST body contains at least: socketUuid, credential, appId. You can capture them in the dev console.
 
-When sending a reauest on Postman, you will see feedback in the app if UI is running on localhost.
+When sending a request on Postman, you will see feedback in the app if UI is running on localhost.
 
 ## Contributing
 

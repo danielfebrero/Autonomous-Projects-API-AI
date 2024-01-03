@@ -4,26 +4,21 @@ import {
   createAndRunThread,
 } from "../../../controllers/openai"
 import { getEconomicCalendarFromTE } from "../economic-calendar"
-import { getTechnicalIndicatorsFromInvestingAndMarketData } from "../investing-technical-indicators"
+import { getQuote } from "../../../controllers/yfinance"
+import { getTechnicalAnalysisFromBarchart } from "../technical-analysis"
 
 export const getTradeDecision = async (symbol: string): Promise<string> => {
-  const symbolForInvesting =
-    symbol.length === 6
-      ? symbol.slice(0, 3).toLowerCase() + "-" + symbol.slice(3).toLowerCase()
-      : symbol
-
+  // we retrieve economic calendar, live quotation and technical indicators
   const promises = [
     getEconomicCalendarFromTE(),
-    getTechnicalIndicatorsFromInvestingAndMarketData(symbolForInvesting),
+    getQuote({ symbol }),
+    getTechnicalAnalysisFromBarchart(symbol),
   ]
 
-  const [economicCalendarMarkdown, quotesAndTechnicalIndicatorsJson] =
+  const [economicCalendarMarkdown, quotesJson, technicalIndicatorsMarkdown] =
     await Promise.all(promises)
 
-  // @ts-ignore
-  const { quotes: quotesJson, responseFromGPT: technicalIndicatorsJson } =
-    quotesAndTechnicalIndicatorsJson
-
+  // we store the files for the assistant
   const filePromises = [
     storeFileForMessages(
       // @ts-ignore
@@ -31,10 +26,15 @@ export const getTradeDecision = async (symbol: string): Promise<string> => {
       "economic-calendar.md"
     ),
     storeFileForMessages(JSON.stringify(quotesJson), "quotes"),
-    storeFileForMessages(technicalIndicatorsJson, "technical-indicators"),
+    storeFileForMessages(
+      technicalIndicatorsMarkdown,
+      "technical-indicators.md"
+    ),
   ]
 
   const filePromiseResolved = await Promise.all(filePromises)
+
+  // we build messages for the assistant
   const messages = [
     buildMessage({
       textContent:
@@ -50,6 +50,7 @@ export const getTradeDecision = async (symbol: string): Promise<string> => {
     }),
   ]
 
+  // we ask an assistant to run the thread
   const response = await createAndRunThread(
     messages,
     "asst_2z9nK4QztZpUKcgCYIQIP3bc",
