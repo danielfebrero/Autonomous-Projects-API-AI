@@ -9,19 +9,42 @@ import {
 import { getSocket } from "../"
 import { authClient } from "../controllers/auth"
 import { emitMessage } from "../utils/socket"
+import { getTradeDecision } from "../plugins/trading/trade-decision/trade-decision"
+import { getTechnicalAnalysisFromBarchart } from "../plugins/trading/technical-analysis"
+import { getEconomicCalendarFromTE } from "../plugins/trading/economic-calendar"
 
 const router = express.Router()
 
-router.post("/historical", (req, res, next) => {
+const serverTools: { [key: string]: Function } = {
+  quotation: getQuote,
+  "décidsion de trade": getTradeDecision,
+  "indicateurs techniques": getInsights,
+  "données historiques": getHistoricalData,
+  "analyse technique": getTechnicalAnalysisFromBarchart,
+}
+
+router.post("/intent", (req, res, next) => {
   authClient(req.body.credential, req.body.appId)
     .then(async (userId) => {
       res.send(200)
+
+      const matchedTool = serverTools[req.body.serverTool]
+      if (!matchedTool) {
+        const socket = getSocket(req.body.socketUuid)
+        emitMessage(
+          socket,
+          userId as string,
+          "Je pense que vous faite référence à un outils de trading, mais je ne connais pas cet outils.",
+          "text"
+        )
+        return
+      }
 
       const socket = getSocket(req.body.socketUuid)
       emitMessage(
         socket,
         userId as string,
-        "Fetching historical data...",
+        `Fetching: ${req.body.serverTool}...`,
         "text"
       )
 
@@ -34,12 +57,10 @@ router.post("/historical", (req, res, next) => {
         pendingTaskId
       )
 
-      getHistoricalData({
+      matchedTool({
         symbol: req.body.symbol,
-        period1: req.body.period1,
-        period2: req.body.period2,
       })
-        .then((response) => {
+        .then((response: any) => {
           emitMessage(
             socket,
             userId as string,
@@ -48,20 +69,25 @@ router.post("/historical", (req, res, next) => {
             pendingTaskId
           )
         })
-        .catch((error) => {
+        .catch((error: any) => {
           console.log(error)
         })
     })
     .catch(console.log)
 })
 
-router.post("/quote", (req, res, next) => {
+router.post("/economic-calendar", (req, res, next) => {
   authClient(req.body.credential, req.body.appId)
     .then(async (userId) => {
       res.send(200)
 
       const socket = getSocket(req.body.socketUuid)
-      emitMessage(socket, userId as string, "Fetching quote...", "text")
+      emitMessage(
+        socket,
+        userId as string,
+        `Fetching: economic calendar...`,
+        "text"
+      )
 
       const pendingTaskId = uuidv4()
       emitMessage(
@@ -72,60 +98,18 @@ router.post("/quote", (req, res, next) => {
         pendingTaskId
       )
 
-      getQuote({
-        symbol: req.body.symbol,
-      })
+      getEconomicCalendarFromTE()
         .then((response) => {
+          const socket = getSocket(req.body.socketUuid)
           emitMessage(
             socket,
             userId as string,
-            JSON.stringify(response),
-            "json",
+            response.data as string,
+            "markdown",
             pendingTaskId
           )
         })
-        .catch((error) => {
-          console.log(error)
-        })
-    })
-    .catch(console.log)
-})
-
-router.post("/insights", (req, res, next) => {
-  authClient(req.body.credential, req.body.appId)
-    .then(async (userId) => {
-      res.send(200)
-
-      const socket = getSocket(req.body.socketUuid)
-      emitMessage(socket, userId as string, "Fetching insights...", "text")
-
-      const pendingTaskId = uuidv4()
-      emitMessage(
-        socket,
-        userId as string,
-        pendingTaskId,
-        "pending",
-        pendingTaskId
-      )
-
-      getInsights({
-        symbol: req.body.symbol,
-        lang: req.body.lang,
-        reportsCount: req.body.reportsCount,
-        region: req.body.region,
-      })
-        .then((response) => {
-          emitMessage(
-            socket,
-            userId as string,
-            JSON.stringify(response),
-            "json",
-            pendingTaskId
-          )
-        })
-        .catch((error) => {
-          console.log(error)
-        })
+        .catch((err: any) => console.log(err))
     })
     .catch(console.log)
 })

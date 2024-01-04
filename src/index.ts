@@ -6,15 +6,13 @@ import cors from "cors"
 import http from "http"
 import path from "path"
 
-import helloWorldRouter from "./routes/helloworld"
 import chatRouter from "./routes/chat"
-import yfinanceRouter from "./routes/yfinance"
 import browseRouter from "./routes/browse"
-import pluginsRouter from "./routes/plugins"
 import openaiRouter from "./routes/openai"
 import aiRouter from "./routes/ai"
 import twitterRouter from "./routes/twitter"
 import unixRouter from "./routes/unix"
+import trading from "./routes/trading"
 
 const socketUsers = new Map<string, SocketIO.Socket>()
 
@@ -35,15 +33,13 @@ app.use(
 // Serve the static files from the React app
 app.use(express.static(path.join(__dirname, "../webapp/build")))
 
-app.use("/helloworld", helloWorldRouter)
 app.use("/chat", chatRouter)
-app.use("/yfinance", yfinanceRouter)
 app.use("/browse", browseRouter)
-app.use("/plugins", pluginsRouter)
 app.use("/openai", openaiRouter)
 app.use("/ai", aiRouter)
 app.use("/twitter", twitterRouter)
 app.use("/unix", unixRouter)
+app.use("/trading", trading)
 
 // Handles any requests that don't match the ones above
 app.get("*", (req, res) => {

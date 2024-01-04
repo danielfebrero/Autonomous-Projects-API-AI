@@ -1,25 +1,34 @@
 # apapiai prompts
 
-- Je veux essayer Hello World sur le serveur
-
-- Je veux essayer la Cloud Fonction hello world
+## AIs
 
 - Demande a gpt4-turbo \`\`\`quand est né Napoléon ```
 
-- Montre moi la quotation EURCHF
+- {any prompt that do not match one of the list is forwarded to gpt4}
+
+
+## Trading
+
+- Montre moi la quotation pour EURCHF
 
 - Montre moi les données historiques de EURUSD
 
 - Montre moi les indicateurs techniques pour TSLA
 
-- screenshot of html of https://actions.darkeccho.com/privacy-policy
+- Montre moi l'analyse technique pour EURUSD
 
-- Montre moi la technical analysis pour EURUSD
+- Montre moi la trade-decision pour EURUSD
 
 - Utilise le plugin calendrier économique
+
+
+## Browsing
+
+- screenshot of html of https://actions.darkeccho.com/privacy-policy
+
+
+## Tweeter
 
 - tweet \`\`\`i can now tweet using NLP on apapiai. this tweet was sent through dialogflow cx.```
 
 - tweet ton dernier message
-
-- Montre moi la trade-decision pour EURUSD
