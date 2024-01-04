@@ -16,15 +16,15 @@ export const getHistoricalData = async ({
     period2: period2 ?? new Date().toISOString().split("T")[0],
   })
 
-  return historical
+  return { content: JSON.stringify(historical), type: "json" }
 }
 
-export const getQuote = async ({ symbol }: { symbol: string }) => {
+export const getQuote = async (symbol: string) => {
   const search = await yahooFinance.search(symbol)
   const selectedSymbol = search.quotes[0].symbol
   const quote = await yahooFinance.quote(selectedSymbol)
 
-  return quote
+  return { content: JSON.stringify(quote), type: "json" }
 }
 
 export const getInsights = async ({
@@ -46,5 +46,5 @@ export const getInsights = async ({
     region: region ?? "US",
   })
 
-  return insights
+  return { content: JSON.stringify(insights), type: "json" }
 }

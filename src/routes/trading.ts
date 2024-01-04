@@ -57,15 +57,13 @@ router.post("/intent", (req, res, next) => {
         pendingTaskId
       )
 
-      matchedTool({
-        symbol: req.body.symbol,
-      })
+      matchedTool(req.body.symbol)
         .then((response: any) => {
           emitMessage(
             socket,
             userId as string,
-            JSON.stringify(response),
-            "json",
+            response.content,
+            response.type,
             pendingTaskId
           )
         })

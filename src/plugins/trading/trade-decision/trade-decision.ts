@@ -7,11 +7,11 @@ import { getEconomicCalendarFromTE } from "../economic-calendar"
 import { getQuote } from "../../../controllers/yfinance"
 import { getTechnicalAnalysisFromBarchart } from "../technical-analysis"
 
-export const getTradeDecision = async (symbol: string): Promise<string> => {
+export const getTradeDecision = async (symbol: string) => {
   // we retrieve economic calendar, live quotation and technical indicators
   const promises = [
     getEconomicCalendarFromTE(),
-    getQuote({ symbol }),
+    getQuote(symbol),
     getTechnicalAnalysisFromBarchart(symbol),
   ]
 
@@ -57,5 +57,5 @@ export const getTradeDecision = async (symbol: string): Promise<string> => {
     {}
   )
 
-  return response
+  return { content: response, type: "text" }
 }

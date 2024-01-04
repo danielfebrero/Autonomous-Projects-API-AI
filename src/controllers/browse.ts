@@ -4,16 +4,16 @@ import StealthPlugin from "puppeteer-extra-plugin-stealth"
 import ProxyPlugin from "puppeteer-extra-plugin-proxy"
 
 puppeteer.use(StealthPlugin())
-puppeteer.use(
-  ProxyPlugin({
-    address: process.env.PROXY_SERVER_URL,
-    port: process.env.PROXY_SERVER_PORT,
-    credentials: {
-      username: process.env.PROXY_SERVER_USERNAME,
-      password: process.env.PROXY_SERVER_PASSWORD,
-    },
-  })
-)
+// puppeteer.use(
+//   ProxyPlugin({
+//     address: process.env.PROXY_SERVER_URL,
+//     port: process.env.PROXY_SERVER_PORT,
+//     credentials: {
+//       username: process.env.PROXY_SERVER_USERNAME,
+//       password: process.env.PROXY_SERVER_PASSWORD,
+//     },
+//   })
+// )
 
 export const goto = async (url: string) => {
   const browser = await puppeteer.launch({
@@ -23,16 +23,16 @@ export const goto = async (url: string) => {
 
   const page = await browser.newPage()
 
-  await page.setViewport({ width: 2160, height: 2048 })
-  await page.setExtraHTTPHeaders({
-    "user-agent":
-      "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
-    "upgrade-insecure-requests": "1",
-    accept:
-      "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-    "accept-encoding": "gzip, deflate, br",
-    "accept-language": "en-US,en;q=0.9,en;q=0.8",
-  })
+  // await page.setViewport({ width: 2160, height: 2048 })
+  // await page.setExtraHTTPHeaders({
+  //   "user-agent":
+  //     "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36",
+  //   "upgrade-insecure-requests": "1",
+  //   accept:
+  //     "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+  //   "accept-encoding": "gzip, deflate, br",
+  //   "accept-language": "en-US,en;q=0.9,en;q=0.8",
+  // })
 
   await page.goto(url)
 

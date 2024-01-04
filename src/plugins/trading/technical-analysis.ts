@@ -52,7 +52,10 @@ export const getTechnicalAnalysisFromBarchart = async (symbol: string) => {
 
       await browser.close()
 
-      resolve(NodeHtmlMarkdown.translate(selectorContent ?? ""))
+      resolve({
+        content: NodeHtmlMarkdown.translate(selectorContent ?? ""),
+        type: "markdown",
+      })
     } catch (error) {
       reject(error)
     }
