@@ -53,9 +53,9 @@ export const getTradeDecision = async (symbol: string) => {
   const response = await createAndRunThread(
     messages,
     "asst_2z9nK4QztZpUKcgCYIQIP3bc",
-    "Check the files and messages of this thread. Also, check the files at assistant level. Then, make a trade decision for short, mid and long term. Provide a trade decision for intraday trading (entry price, stop loss, take profit, etc.)",
+    "Check the files and messages of this thread. Also, check the files at assistant level. Then, make a trade decision for short, mid and long term. Provide a trade decision for intraday trading (entry price, stop loss, take profit, etc.). Answer with one message only in a structured markdown way.",
     {}
   )
 
-  return { content: response, type: "text" }
+  return { content: response, type: "markdown" }
 }

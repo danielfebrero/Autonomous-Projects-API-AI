@@ -28,7 +28,7 @@ apapiai offers a variety of features (as a user), including:
 
 ## Screenshot
 
-![Project Screenshot](https://i.imgur.com/FtM03pG.png)
+![Project Screenshot](https://i.imgur.com/zaX2liZ.png)
 ![Project Diagram](https://i.imgur.com/Hx0h45p.png)
 
 ## Installation

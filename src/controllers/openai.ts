@@ -91,7 +91,12 @@ export const createAndRunThread = async (
         threadMessages.data[0].id
       )
 
-      returnResponse = (response.content[0] as any).text.value ?? ""
+      returnResponse = response.content.reduce((acc, curr) => {
+        if (curr.type === "text") {
+          return acc + "\n\n" + curr.text.value
+        }
+        return acc
+      }, "")
     }
 
     loops++
