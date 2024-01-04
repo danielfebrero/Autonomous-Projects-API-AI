@@ -1,11 +1,28 @@
-import puppeteer from "puppeteer"
+import puppeteer from "puppeteer-extra"
+import StealthPlugin from "puppeteer-extra-plugin-stealth"
+// @ts-ignore
+import ProxyPlugin from "puppeteer-extra-plugin-proxy"
+
+puppeteer.use(StealthPlugin())
+puppeteer.use(
+  ProxyPlugin({
+    address: process.env.PROXY_SERVER_URL,
+    port: process.env.PROXY_SERVER_PORT,
+    credentials: {
+      username: process.env.PROXY_SERVER_USERNAME,
+      password: process.env.PROXY_SERVER_PASSWORD,
+    },
+  })
+)
 
 export const goto = async (url: string) => {
   const browser = await puppeteer.launch({
     headless: "new",
     args: ["--no-sandbox"],
   })
+
   const page = await browser.newPage()
+
   await page.setViewport({ width: 2160, height: 2048 })
   await page.setExtraHTTPHeaders({
     "user-agent":
