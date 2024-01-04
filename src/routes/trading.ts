@@ -102,8 +102,8 @@ router.post("/economic-calendar", (req, res, next) => {
           emitMessage(
             socket,
             userId as string,
-            response.data as string,
-            "markdown",
+            response.content,
+            response.type,
             pendingTaskId
           )
         })

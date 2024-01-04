@@ -22,7 +22,7 @@ export const getTradeDecision = async (symbol: string) => {
   const filePromises = [
     storeFileForMessages(
       // @ts-ignore
-      economicCalendarMarkdown.data,
+      economicCalendarMarkdown.content,
       "economic-calendar.md"
     ),
   ]
@@ -35,9 +35,9 @@ export const getTradeDecision = async (symbol: string) => {
     " now, " +
     new Date().toString() +
     ". This is the live quotation of the symbol: \n" +
-    JSON.stringify(quotesJson) +
+    JSON.stringify(quotesJson.content) +
     "\n And this is the technical analysis of the symbol: \n" +
-    technicalIndicatorsMarkdown
+    technicalIndicatorsMarkdown.content
 
   console.log({ textContent })
 

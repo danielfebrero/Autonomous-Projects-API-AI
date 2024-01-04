@@ -3,7 +3,8 @@ import { NodeHtmlMarkdown } from "node-html-markdown"
 import { goto } from "../../controllers/browse"
 
 export const getEconomicCalendarFromInvesting = async (): Promise<{
-  data: string
+  content: string
+  type: string
 }> => {
   const { page, browser } = await goto(
     `https://www.investing.com/economic-calendar/`
@@ -29,7 +30,8 @@ export const getEconomicCalendarFromInvesting = async (): Promise<{
   }
 
   return {
-    data: NodeHtmlMarkdown.translate(selectorContent ?? ""),
+    content: NodeHtmlMarkdown.translate(selectorContent ?? ""),
+    type: "markdown",
   }
 }
 
@@ -49,7 +51,8 @@ export const getEconomicCalendarFromDailyFX = async () => {
   }
 
   return {
-    data: NodeHtmlMarkdown.translate(selectorContent ?? ""),
+    content: NodeHtmlMarkdown.translate(selectorContent ?? ""),
+    type: "markdown",
   }
 }
 
@@ -67,6 +70,7 @@ export const getEconomicCalendarFromTE = async () => {
   }
 
   return {
-    data: NodeHtmlMarkdown.translate(selectorContent ?? ""),
+    content: NodeHtmlMarkdown.translate(selectorContent ?? ""),
+    type: "markdown",
   }
 }

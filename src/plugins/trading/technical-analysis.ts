@@ -40,7 +40,9 @@ export const getTechnicalAnalysisFromInvesting = async (symbol: string) => {
   })
 }
 
-export const getTechnicalAnalysisFromBarchart = async (symbol: string) => {
+export const getTechnicalAnalysisFromBarchart = async (
+  symbol: string
+): Promise<{ content: string; type: string }> => {
   return new Promise(async (resolve, reject) => {
     const { page, browser } = await goto(
       `https://www.barchart.com/forex/quotes/%5E${symbol}/technical-analysis`
