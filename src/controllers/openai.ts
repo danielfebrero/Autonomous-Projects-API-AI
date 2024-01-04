@@ -3,7 +3,7 @@ import { ThreadCreateParams } from "../override/openai/src/resources/beta/thread
 import { toFile } from "../override/openai/uploads"
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY_2,
 })
 
 export const vision = async ({

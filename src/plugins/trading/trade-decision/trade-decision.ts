@@ -25,28 +25,27 @@ export const getTradeDecision = async (symbol: string): Promise<string> => {
       economicCalendarMarkdown.data,
       "economic-calendar.md"
     ),
-    storeFileForMessages(JSON.stringify(quotesJson), "quotes"),
-    storeFileForMessages(
-      technicalIndicatorsMarkdown,
-      "technical-indicators.md"
-    ),
   ]
 
   const filePromiseResolved = await Promise.all(filePromises)
 
+  const textContent =
+    "The attached files in this message is the economic calendar of the week for " +
+    symbol +
+    " now, " +
+    new Date().toString() +
+    ". This is the live quotation of the symbol: \n" +
+    JSON.stringify(quotesJson) +
+    "\n And this is the technical analysis of the symbol: \n" +
+    technicalIndicatorsMarkdown
+
+  console.log({ textContent })
+
   // we build messages for the assistant
   const messages = [
     buildMessage({
-      textContent:
-        "The attached files in this message are the economic calendar of the week, the quotation, and the technical indicators for " +
-        symbol +
-        " now, " +
-        new Date().toString(),
-      fileIds: [
-        filePromiseResolved[0].id,
-        filePromiseResolved[1].id,
-        filePromiseResolved[2].id,
-      ],
+      textContent,
+      fileIds: [filePromiseResolved[0].id],
     }),
   ]
 
@@ -54,7 +53,7 @@ export const getTradeDecision = async (symbol: string): Promise<string> => {
   const response = await createAndRunThread(
     messages,
     "asst_2z9nK4QztZpUKcgCYIQIP3bc",
-    "Check the files and messages of this thread. Also, check the files at assistant level. Then, make a trade decision.",
+    "Check the files and messages of this thread. Also, check the files at assistant level. Then, make a trade decision for short, mid and long term. Provide a trade decision for intraday trading (entry price, stop loss, take profit, etc.)",
     {}
   )
 
