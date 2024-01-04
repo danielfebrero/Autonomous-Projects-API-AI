@@ -17,7 +17,7 @@ const router = express.Router()
 
 const serverTools: { [key: string]: Function } = {
   quotation: getQuote,
-  "décidsion de trade": getTradeDecision,
+  "décision de trade": getTradeDecision,
   "indicateurs techniques": getInsights,
   "données historiques": getHistoricalData,
   "analyse technique": getTechnicalAnalysisFromBarchart,
