@@ -20,9 +20,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
   senderName,
 }) => {
   const copyToClipboard = () =>
-    navigator.clipboard.writeText(
-      Buffer.isBuffer(message.value) ? message.value.toString() : message.value
-    )
+    navigator.clipboard.writeText(message.value.toString())
 
   return (
     <div
