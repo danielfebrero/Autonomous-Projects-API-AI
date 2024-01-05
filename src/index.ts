@@ -13,6 +13,7 @@ import aiRouter from "./routes/ai"
 import twitterRouter from "./routes/twitter"
 import unixRouter from "./routes/unix"
 import trading from "./routes/trading"
+import intent from "./routes/intent"
 
 const socketUsers = new Map<string, SocketIO.Socket>()
 
@@ -34,6 +35,7 @@ app.use(
 app.use(express.static(path.join(__dirname, "../webapp/build")))
 
 app.use("/chat", chatRouter)
+app.use("/intent", intent)
 app.use("/browse", browseRouter)
 app.use("/openai", openaiRouter)
 app.use("/ai", aiRouter)

@@ -19,7 +19,7 @@ export const getHistoricalData = async ({
   return { content: JSON.stringify(historical), type: "json" }
 }
 
-export const getQuote = async (symbol: string) => {
+export const getQuote = async ({ symbol }: { symbol: string }) => {
   const search = await yahooFinance.search(symbol)
   const selectedSymbol = search.quotes[0].symbol
   const quote = await yahooFinance.quote(selectedSymbol)

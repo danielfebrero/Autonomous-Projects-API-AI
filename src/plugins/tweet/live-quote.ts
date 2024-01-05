@@ -11,7 +11,7 @@ export const tweetLiveQuote = async ({
 }): Promise<string> => {
   return new Promise(async (resolve, reject) => {
     // 1. Get quote
-    const quote = await getQuote(symbol)
+    const quote = await getQuote({ symbol })
 
     // 2. Summurize it
     const gptResponse = await chat({

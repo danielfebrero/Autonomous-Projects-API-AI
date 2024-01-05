@@ -5,14 +5,12 @@ import {
   setTwitterStateByUserId,
   getTwitterUserByState,
   setTwitterUserByState,
-} from "../routes/twitter"
+} from "../services/twitter"
 
 const twitterClient = new TwitterApi({
   // @ts-ignore
   clientId: process.env.TWITTER_CLIENT_ID,
   clientSecret: process.env.TWITTER_CLIENT_SECRET,
-  // appKey: process.env.TWITTER_APP_KEY,
-  // appSecret: process.env.TWITTER_APP_SECRET,
 })
 
 export const auth = (userId: string) => {
