@@ -13,13 +13,14 @@ import { getTradeDecision } from "../plugins/trading/trade-decision/trade-decisi
 import { getTechnicalAnalysisFromBarchart } from "../plugins/trading/technical-analysis"
 import { tweetLiveQuote } from "../plugins/tweet/live-quote"
 import { verifyTwitterUser } from "../services/twitter"
+import { getTechnicalAnalysisCake } from "../services/trading"
 
 const getServerTools: { [key: string]: Function } = {
   quotation: getQuote,
   "décision de trade": getTradeDecision,
   "indicateurs techniques": getInsights,
   "données historiques": getHistoricalData,
-  "analyse technique": getTechnicalAnalysisFromBarchart,
+  "analyse technique": getTechnicalAnalysisCake,
 }
 
 const twitterServerTools: { [key: string]: Function } = {
