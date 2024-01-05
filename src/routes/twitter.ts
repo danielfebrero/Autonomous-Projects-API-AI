@@ -1,6 +1,7 @@
 import express from "express"
 import { v4 as uuidv4 } from "uuid"
 import TwitterApi from "twitter-api-v2"
+import { Request, Response } from "express"
 
 import { getSocket } from ".."
 import { auth, tweet } from "../controllers/twitter"
@@ -10,8 +11,13 @@ import {
   getBeforeLastAgentResponseByUser,
 } from "./chat"
 import { emitMessage } from "../utils/socket"
+import { tweetLiveQuote } from "../plugins/tweet/live-quote"
 
 const router = express.Router()
+
+const serverTools: { [key: string]: Function } = {
+  quotation: tweetLiveQuote,
+}
 
 const twitterUsers = new Map<string, any>()
 const twitterStates = new Map<string, any>()
@@ -24,27 +30,82 @@ export const setTwitterUserByState = (state: string, user: any) =>
 export const setTwitterStateByUserId = (userId: string, state: string) =>
   twitterStates.set(userId, state)
 
-router.post("/tweet", (req, res, next) => {
+const verifyTwitterUser = (res: Response, req: Request, userId: string) => {
+  const state = getTwitterStateByUserId(userId ?? "")
+  const twitterUser = getTwitterUserByState(state ?? "")
+  const loggedClient = twitterUser?.loggedClient
+  const socket = getSocket(req.body.socketUuid)
+
+  if (!loggedClient) {
+    const redirectUrl = auth(userId as string)
+
+    emitMessage(
+      socket,
+      userId as string,
+      "[Login to twitter](" + redirectUrl + ")",
+      "link"
+    )
+    res.send(200)
+    return false
+  } else {
+    res.send(200)
+    return socket
+  }
+}
+
+router.post("/intent", (req, res, next) => {
   authClient(req.body.credential, req.body.appId)
     .then(async (userId) => {
-      const state = getTwitterStateByUserId(userId ?? "")
-      const twitterUser = getTwitterUserByState(state ?? "")
-      const loggedClient = twitterUser?.loggedClient
-      const socket = getSocket(req.body.socketUuid)
+      const socket = verifyTwitterUser(res, req, userId)
+      if (socket) {
+        const matchedTool = serverTools[req.body.serverTool]
+        if (!matchedTool) {
+          const socket = getSocket(req.body.socketUuid)
+          emitMessage(
+            socket,
+            userId as string,
+            "Je pense que vous faite référence à un outils de tweet, mais je ne connais pas cet outils.",
+            "text"
+          )
+          return
+        }
 
-      if (!loggedClient) {
-        const redirectUrl = auth(userId as string)
+        emitMessage(socket, userId as string, "Tweeting...", "text")
 
+        const pendingTaskId = uuidv4()
         emitMessage(
           socket,
           userId as string,
-          "[Login to twitter](" + redirectUrl + ")",
-          "link"
+          pendingTaskId,
+          "pending",
+          pendingTaskId
         )
-        res.send(200)
-      } else {
-        res.send(200)
 
+        matchedTool({ userId, ...req.body })
+          .then((response: string) => {
+            emitMessage(
+              socket,
+              userId as string,
+              "Tweeted: " + response,
+              "text",
+              pendingTaskId
+            )
+          })
+          .catch((error: string) => {
+            res.status(500).send("Internal error when using the tool: " + error)
+          })
+      }
+    })
+    .catch((error) => {
+      res.status(403).send("Invalid google signin credential!")
+    })
+})
+
+router.post("/tweet", (req, res, next) => {
+  authClient(req.body.credential, req.body.appId)
+    .then(async (userId) => {
+      const socket = verifyTwitterUser(res, req, userId)
+      if (socket) {
         const message = req.body.quote
           ? req.body.quote.replace(/^```|```$/g, "")
           : req.body.reference && req.body.reference === "ton dernier message"
@@ -87,12 +148,12 @@ router.post("/tweet", (req, res, next) => {
             )
           })
           .catch((error) => {
-            console.log(error)
+            res.status(500).send("Internal error when tweeting: " + error)
           })
       }
     })
     .catch((error) => {
-      console.log(error)
+      res.status(403).send("Invalid google signin credential!")
     })
 })
 

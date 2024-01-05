@@ -25,15 +25,19 @@ export const auth = (userId: string) => {
   return url
 }
 
-export const tweet = async (userId: string, message: string) => {
-  try {
-    const state = getTwitterStateByUserId(userId ?? "")
-    const twitterUser = getTwitterUserByState(state ?? "")
-    const response = await twitterUser.loggedClient.v2.tweet(message)
-    console.log("Tweet posté:", response)
-    return response.data.text
-  } catch (error) {
-    console.log(error)
-    return "Erreur lors de la publication du tweet"
-  }
+export const tweet = async (
+  userId: string,
+  message: string
+): Promise<string> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const state = getTwitterStateByUserId(userId ?? "")
+      const twitterUser = getTwitterUserByState(state ?? "")
+      const response = await twitterUser.loggedClient.v2.tweet(message)
+      resolve(response.data.text)
+    } catch (error) {
+      console.error(error)
+      reject("Erreur lors de la publication du tweet: " + error)
+    }
+  })
 }
