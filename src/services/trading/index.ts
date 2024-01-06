@@ -1,5 +1,17 @@
 import { getHistoricalData } from "../../controllers/yfinance"
 
+const williams = (
+  dataClose: number[],
+  dataHigh: number[],
+  dataLow: number[]
+) => {
+  return (
+    ((getHighestPrice(dataHigh) - dataClose.slice(-1)[0]) /
+      (getHighestPrice(dataHigh) - getLowestPrice(dataLow))) *
+    -100
+  )
+}
+
 const movingAverage = (data: number[], period: number): number | undefined => {
   const refinedData = data.slice(-period)
   if (refinedData.length < period) return undefined
@@ -36,7 +48,6 @@ const rsi = (data: number[], period: number) => {
       0
     )
   const rs = gain / loss
-  console.log({ rs, gain, loss })
   return 100 - 100 / (1 + rs)
 }
 
@@ -103,6 +114,13 @@ export const getTechnicalAnalysisCake = async ({
 
   return {
     content: JSON.stringify({
+      williams: {
+        "14days": williams(
+          historicalData,
+          historicalDataHigh,
+          historicalDataLow
+        ),
+      },
       movingAverage: {
         "5days": movingAverage(historicalData, 5),
         "20days": movingAverage(historicalData, 20),
