@@ -1,5 +1,49 @@
 import { getHistoricalData } from "../../controllers/yfinance"
 
+const cci = (
+  data: { high: number; low: number; close: number }[],
+  period: number
+) => {
+  const PT = data.slice(-period).map((d) => (d.high + d.low + d.close) / 3)
+  const MMS = []
+  for (let i = 0; i < PT.length; i++) {
+    if (i >= period - 1) {
+      let sum = 0
+      for (let j = i; j > i - period; j--) {
+        sum += PT[j]
+      }
+      MMS.push(sum / period)
+    } else {
+      MMS.push(null)
+    }
+  }
+
+  const meanDeviation = []
+  for (let i = 0; i < PT.length; i++) {
+    if (i >= period - 1) {
+      let sumDeviation = 0
+      for (let j = i; j > i - period; j--) {
+        sumDeviation += Math.abs(PT[j] - (MMS[i] || 0))
+      }
+      meanDeviation.push(sumDeviation / period)
+    } else {
+      meanDeviation.push(null)
+    }
+  }
+
+  const CCI = []
+  for (let i = 0; i < PT.length; i++) {
+    if (MMS[i] !== null && meanDeviation[i] !== null) {
+      let cci = (PT[i] - (MMS[i] || 0)) / (0.015 * (meanDeviation[i] || 0))
+      CCI.push(cci)
+    } else {
+      CCI.push(null)
+    }
+  }
+
+  return CCI.filter((cci) => cci !== null).slice(-1)[0]
+}
+
 const williams = (
   dataClose: number[],
   dataHigh: number[],
@@ -88,7 +132,7 @@ export const getTechnicalAnalysisCake = async ({
     symbol,
   })
 
-  const historicalData = JSON.parse(historicalDataRaw.content).reduce(
+  const historicalDataClose = JSON.parse(historicalDataRaw.content).reduce(
     (acc: number[], curr: { close: number }) => {
       acc.push(curr.close)
       return acc
@@ -116,52 +160,59 @@ export const getTechnicalAnalysisCake = async ({
     content: JSON.stringify({
       williams: {
         "14days": williams(
-          historicalData,
+          historicalDataClose,
           historicalDataHigh,
           historicalDataLow
         ),
       },
       movingAverage: {
-        "5days": movingAverage(historicalData, 5),
-        "20days": movingAverage(historicalData, 20),
-        "50days": movingAverage(historicalData, 50),
-        "100days": movingAverage(historicalData, 100),
-        "200days": movingAverage(historicalData, 200),
+        "5days": movingAverage(historicalDataClose, 5),
+        "20days": movingAverage(historicalDataClose, 20),
+        "50days": movingAverage(historicalDataClose, 50),
+        "100days": movingAverage(historicalDataClose, 100),
+        "200days": movingAverage(historicalDataClose, 200),
       },
       rsi: {
-        "9days": rsi(historicalData, 9),
-        "14days": rsi(historicalData, 14),
-        "20days": rsi(historicalData, 20),
-        "50days": rsi(historicalData, 50),
-        "100days": rsi(historicalData, 100),
+        "9days": rsi(historicalDataClose, 9),
+        "14days": rsi(historicalDataClose, 14),
+        "20days": rsi(historicalDataClose, 20),
+        "50days": rsi(historicalDataClose, 50),
+        "100days": rsi(historicalDataClose, 100),
+      },
+      cci: {
+        "9days": cci(JSON.parse(historicalDataRaw.content), 9),
+        "14days": cci(JSON.parse(historicalDataRaw.content), 14),
+        "20days": cci(JSON.parse(historicalDataRaw.content), 20),
+        "50days": cci(JSON.parse(historicalDataRaw.content), 50),
+        "100days": cci(JSON.parse(historicalDataRaw.content), 100),
       },
       rawStochastic: {
         "9days": rawStochastic(
-          historicalData,
+          historicalDataClose,
           historicalDataHigh,
           historicalDataLow,
           9
         ),
         "14days": rawStochastic(
-          historicalData,
+          historicalDataClose,
           historicalDataHigh,
           historicalDataLow,
           14
         ),
         "20days": rawStochastic(
-          historicalData,
+          historicalDataClose,
           historicalDataHigh,
           historicalDataLow,
           20
         ),
         "50days": rawStochastic(
-          historicalData,
+          historicalDataClose,
           historicalDataHigh,
           historicalDataLow,
           50
         ),
         "1OOdays": rawStochastic(
-          historicalData,
+          historicalDataClose,
           historicalDataHigh,
           historicalDataLow,
           100
