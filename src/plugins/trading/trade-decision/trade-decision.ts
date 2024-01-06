@@ -5,17 +5,17 @@ import {
 } from "../../../controllers/openai"
 import { getEconomicCalendarFromTE } from "../economic-calendar"
 import { getQuote } from "../../../controllers/yfinance"
-import { getTechnicalAnalysisFromBarchart } from "../technical-analysis"
+import { getTechnicalAnalysisCake } from "../../../services/trading"
 
 export const getTradeDecision = async ({ symbol }: { symbol: string }) => {
   // we retrieve economic calendar, live quotation and technical indicators
   const promises = [
     getEconomicCalendarFromTE(),
     getQuote({ symbol }),
-    getTechnicalAnalysisFromBarchart(symbol),
+    getTechnicalAnalysisCake({ symbol }),
   ]
 
-  const [economicCalendarMarkdown, quotesJson, technicalIndicatorsMarkdown] =
+  const [economicCalendarMarkdown, quotesJson, technicalIndicatorsJSON] =
     await Promise.all(promises)
 
   // we store the files for the assistant
@@ -35,9 +35,9 @@ export const getTradeDecision = async ({ symbol }: { symbol: string }) => {
     " now, " +
     new Date().toString() +
     ". This is the live quotation of the symbol: \n" +
-    JSON.stringify(quotesJson.content) +
+    quotesJson.content +
     "\n And this is the technical analysis of the symbol: \n" +
-    technicalIndicatorsMarkdown.content
+    technicalIndicatorsJSON.content
 
   console.log({ textContent })
 

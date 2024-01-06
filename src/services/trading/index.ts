@@ -213,83 +213,85 @@ export const getTechnicalAnalysisCake = async ({
     [] as number[]
   )
 
+  const result = JSON.stringify({
+    MACD: {
+      "12,26": macd(
+        historicalDataClose,
+        ema(historicalDataClose, 12),
+        ema(historicalDataClose, 26)
+      ),
+    },
+    williams: {
+      "14days": williams(
+        historicalDataClose,
+        historicalDataHigh,
+        historicalDataLow
+      ),
+    },
+    movingAverage: {
+      "5days": movingAverage(historicalDataClose, 5),
+      "20days": movingAverage(historicalDataClose, 20),
+      "50days": movingAverage(historicalDataClose, 50),
+      "100days": movingAverage(historicalDataClose, 100),
+      "200days": movingAverage(historicalDataClose, 200),
+    },
+    RSI: {
+      "9days": rsi(historicalDataClose, 9),
+      "14days": rsi(historicalDataClose, 14),
+      "20days": rsi(historicalDataClose, 20),
+      "50days": rsi(historicalDataClose, 50),
+      "100days": rsi(historicalDataClose, 100),
+    },
+    CCI: {
+      "9days": cci(JSON.parse(historicalDataRaw.content), 9),
+      "14days": cci(JSON.parse(historicalDataRaw.content), 14),
+      "20days": cci(JSON.parse(historicalDataRaw.content), 20),
+      "50days": cci(JSON.parse(historicalDataRaw.content), 50),
+      "100days": cci(JSON.parse(historicalDataRaw.content), 100),
+    },
+    ATR: {
+      "9days": atr(JSON.parse(historicalDataRaw.content), 9),
+      "14days": atr(JSON.parse(historicalDataRaw.content), 14),
+      "20days": atr(JSON.parse(historicalDataRaw.content), 20),
+      "50days": atr(JSON.parse(historicalDataRaw.content), 50),
+      "100days": atr(JSON.parse(historicalDataRaw.content), 100),
+    },
+    rawStochastic: {
+      "9days": rawStochastic(
+        historicalDataClose,
+        historicalDataHigh,
+        historicalDataLow,
+        9
+      ),
+      "14days": rawStochastic(
+        historicalDataClose,
+        historicalDataHigh,
+        historicalDataLow,
+        14
+      ),
+      "20days": rawStochastic(
+        historicalDataClose,
+        historicalDataHigh,
+        historicalDataLow,
+        20
+      ),
+      "50days": rawStochastic(
+        historicalDataClose,
+        historicalDataHigh,
+        historicalDataLow,
+        50
+      ),
+      "1OOdays": rawStochastic(
+        historicalDataClose,
+        historicalDataHigh,
+        historicalDataLow,
+        100
+      ),
+    },
+  })
+
   return {
-    content: JSON.stringify({
-      MACD: {
-        "12,26": macd(
-          historicalDataClose,
-          ema(historicalDataClose, 12),
-          ema(historicalDataClose, 26)
-        ),
-      },
-      williams: {
-        "14days": williams(
-          historicalDataClose,
-          historicalDataHigh,
-          historicalDataLow
-        ),
-      },
-      movingAverage: {
-        "5days": movingAverage(historicalDataClose, 5),
-        "20days": movingAverage(historicalDataClose, 20),
-        "50days": movingAverage(historicalDataClose, 50),
-        "100days": movingAverage(historicalDataClose, 100),
-        "200days": movingAverage(historicalDataClose, 200),
-      },
-      RSI: {
-        "9days": rsi(historicalDataClose, 9),
-        "14days": rsi(historicalDataClose, 14),
-        "20days": rsi(historicalDataClose, 20),
-        "50days": rsi(historicalDataClose, 50),
-        "100days": rsi(historicalDataClose, 100),
-      },
-      CCI: {
-        "9days": cci(JSON.parse(historicalDataRaw.content), 9),
-        "14days": cci(JSON.parse(historicalDataRaw.content), 14),
-        "20days": cci(JSON.parse(historicalDataRaw.content), 20),
-        "50days": cci(JSON.parse(historicalDataRaw.content), 50),
-        "100days": cci(JSON.parse(historicalDataRaw.content), 100),
-      },
-      ATR: {
-        "9days": atr(JSON.parse(historicalDataRaw.content), 9),
-        "14days": atr(JSON.parse(historicalDataRaw.content), 14),
-        "20days": atr(JSON.parse(historicalDataRaw.content), 20),
-        "50days": atr(JSON.parse(historicalDataRaw.content), 50),
-        "100days": atr(JSON.parse(historicalDataRaw.content), 100),
-      },
-      rawStochastic: {
-        "9days": rawStochastic(
-          historicalDataClose,
-          historicalDataHigh,
-          historicalDataLow,
-          9
-        ),
-        "14days": rawStochastic(
-          historicalDataClose,
-          historicalDataHigh,
-          historicalDataLow,
-          14
-        ),
-        "20days": rawStochastic(
-          historicalDataClose,
-          historicalDataHigh,
-          historicalDataLow,
-          20
-        ),
-        "50days": rawStochastic(
-          historicalDataClose,
-          historicalDataHigh,
-          historicalDataLow,
-          50
-        ),
-        "1OOdays": rawStochastic(
-          historicalDataClose,
-          historicalDataHigh,
-          historicalDataLow,
-          100
-        ),
-      },
-    }),
+    content: JSON.stringify(result),
     type: "json",
   }
 }
