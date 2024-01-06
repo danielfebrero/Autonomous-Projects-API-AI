@@ -2,7 +2,7 @@
 
 ## Introduction
 
-apapiai is a project that allows you to create and manage your own virtual agents. With apapiai, you can create agents that can answer your questions, help you with tasks, and even play games with you.
+apapiai is a project that connects you to the most receits generative AIs and APIs.
 
 ## APIs (plug-and-play)
 
@@ -13,18 +13,6 @@ apapiai is a project that allows you to create and manage your own virtual agent
 - google signin
 - vertex / gemini
 - twitter
-
-## Features
-
-apapiai offers a variety of features (as a developer), including:
-
-- The ability to create and manage your own virtual agents
-- The ability to train your agents to answer your questions and help you with tasks
-- The ability to play games with your agents
-
-apapiai offers a variety of features (as a user), including:
-- Automatize tasks and projects
-- The ability to play games with your agents
 
 ## Screenshot
 
