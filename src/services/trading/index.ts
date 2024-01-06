@@ -1,5 +1,62 @@
 import { getHistoricalData } from "../../controllers/yfinance"
 
+const ema = (data: number[], period: number) => {
+  const alpha = 2 / (period + 1)
+  let ema = []
+
+  // Initialiser avec la première donnée de prix
+  ema[0] = data[0]
+
+  // Calculer la EMA pour le reste des données
+  for (let i = 1; i < data.length; i++) {
+    ema[i] = data[i] * alpha + ema[i - 1] * (1 - alpha)
+  }
+
+  return ema
+}
+
+const macd = (data: number[], ema1: number[], ema2: number[]) => {
+  // Soustraire la EMA26 de la EMA12 pour obtenir la ligne MACD
+  const macdLine = ema1.map((value, index) => value - ema2[index])
+
+  // Calculer la EMA de 9 jours pour la ligne MACD pour obtenir la ligne de signal
+  const signalLine = ema(macdLine, 9)
+
+  // La dernière valeur du MACD est la différence entre la dernière valeur de la ligne MACD et de la ligne de signal
+  const macdValue =
+    macdLine[macdLine.length - 1] - signalLine[signalLine.length - 1]
+
+  return macdValue
+}
+
+const atr = (
+  data: { high: number; low: number; close: number }[],
+  period: number
+) => {
+  let trueRanges = []
+
+  for (let i = 1; i < data.length; i++) {
+    let high = data[i].high
+    let low = data[i].low
+    let previousClose = data[i - 1].close
+
+    let tr1 = high - low
+    let tr2 = Math.abs(high - previousClose)
+    let tr3 = Math.abs(low - previousClose)
+
+    let trueRange = Math.max(tr1, tr2, tr3)
+    trueRanges.push(trueRange)
+  }
+
+  // Calculate the ATR only if we have enough true range values
+  if (trueRanges.length >= period) {
+    let sum = trueRanges.slice(-period).reduce((a, b) => a + b, 0)
+    return sum / period
+  } else {
+    return null // Not enough data to calculate ATR
+  }
+}
+
 const cci = (
   data: { high: number; low: number; close: number }[],
   period: number
@@ -158,6 +215,13 @@ export const getTechnicalAnalysisCake = async ({
 
   return {
     content: JSON.stringify({
+      MACD: {
+        "12,26": macd(
+          historicalDataClose,
+          ema(historicalDataClose, 12),
+          ema(historicalDataClose, 26)
+        ),
+      },
       williams: {
         "14days": williams(
           historicalDataClose,
@@ -172,19 +236,26 @@ export const getTechnicalAnalysisCake = async ({
         "100days": movingAverage(historicalDataClose, 100),
         "200days": movingAverage(historicalDataClose, 200),
       },
-      rsi: {
+      RSI: {
         "9days": rsi(historicalDataClose, 9),
         "14days": rsi(historicalDataClose, 14),
         "20days": rsi(historicalDataClose, 20),
         "50days": rsi(historicalDataClose, 50),
         "100days": rsi(historicalDataClose, 100),
       },
-      cci: {
+      CCI: {
         "9days": cci(JSON.parse(historicalDataRaw.content), 9),
         "14days": cci(JSON.parse(historicalDataRaw.content), 14),
         "20days": cci(JSON.parse(historicalDataRaw.content), 20),
         "50days": cci(JSON.parse(historicalDataRaw.content), 50),
         "100days": cci(JSON.parse(historicalDataRaw.content), 100),
+      },
+      ATR: {
+        "9days": atr(JSON.parse(historicalDataRaw.content), 9),
+        "14days": atr(JSON.parse(historicalDataRaw.content), 14),
+        "20days": atr(JSON.parse(historicalDataRaw.content), 20),
+        "50days": atr(JSON.parse(historicalDataRaw.content), 50),
+        "100days": atr(JSON.parse(historicalDataRaw.content), 100),
       },
       rawStochastic: {
         "9days": rawStochastic(
