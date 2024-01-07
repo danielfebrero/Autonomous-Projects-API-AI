@@ -1,5 +1,6 @@
 import express from "express"
 import { v4 as uuidv4 } from "uuid"
+import { unzip } from "zlib"
 
 import { chat } from "../controllers/openai"
 import { generate } from "../controllers/vertex"
@@ -14,12 +15,25 @@ const AIs: any = {
   "gemini-pro": generate,
 }
 
-router.post("/", (req, res, next) => {
+router.post("/", async (req, res, next) => {
   res.send(200)
   const userId: string = res.locals.userId
   const ai = req.body.ai && req.body.ai.length > 0 ? req.body.ai : "gpt4-turbo"
 
   var instruction = req.body.instruction
+  if (req.body.forwarded) {
+    // ungzip instructions forwarded from textQueryInput
+    const buffer = Buffer.from(req.body.instruction, "base64")
+    instruction = await new Promise((resolve, reject) => {
+      unzip(buffer, (err, result) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(result.toString())
+        }
+      })
+    })
+  }
   if (req.body.reference && req.body.reference === "ton dernier message") {
     instruction = includeLastMessage(userId, instruction, true)
   }

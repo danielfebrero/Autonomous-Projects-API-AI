@@ -1,5 +1,5 @@
 import { SessionsClient } from "@google-cloud/dialogflow-cx/build/src/v3beta1"
-
+import { gzip } from "zlib"
 import { IntentResponseType } from "../types/dialogflow"
 
 export const addToChat = async (
@@ -19,6 +19,16 @@ export const addToChat = async (
     process.env.AGENT_ID ?? "",
     userId
   )
+
+  const zippedQuery = await new Promise<Buffer>((resolve, reject) => {
+    gzip(query, (err, result) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(result)
+      }
+    })
+  })
 
   const request = {
     session: sessionPath,
@@ -41,7 +51,7 @@ export const addToChat = async (
             stringValue: appId,
           },
           queryTextInput: {
-            stringValue: query,
+            stringValue: zippedQuery.toString("base64"),
           },
         },
       },
