@@ -5,7 +5,7 @@ import { authClient } from "../controllers/auth"
 const googleSignin = (req: Request, res: Response, next: NextFunction) => {
   authClient(req.body.credential, req.body.appId)
     .then(async (userId) => {
-      res.locals.userId = userId
+      res.locals = { ...res.locals, userId }
       next()
     })
     .catch((err) => {
@@ -14,7 +14,6 @@ const googleSignin = (req: Request, res: Response, next: NextFunction) => {
         error: err,
       })
     })
-  next()
 }
 
 export default googleSignin

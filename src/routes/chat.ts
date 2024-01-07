@@ -67,7 +67,7 @@ router.post("/", async (req, res) => {
     req.body.appId
   )
   if (convResponse) {
-    addResponseToAgentResponsesByUser(userId ?? "", convResponse)
+    addResponseToAgentResponsesByUser(userId, convResponse)
     res.send(
       prepareResponseForWebapp(convResponse as unknown as string, "text")
     )
