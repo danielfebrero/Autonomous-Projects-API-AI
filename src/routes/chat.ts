@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from "uuid"
 
 import { addToChat } from "../controllers/dialogflow"
 import { prepareResponseForWebapp } from "../utils/webapp"
-import { RequestCake } from "../types/express"
 
 type AgentResponseType = { uuid: string; value: string | Buffer }
 
@@ -59,13 +58,13 @@ export const addResponseToAgentResponsesByUser = (
 const router = express.Router()
 
 router.post("/", async (req, res) => {
-  const userId: string = (req as RequestCake).calculatedData.userId
+  const userId: string = res.locals.userId
   const convResponse = await addToChat(
-    userId ?? "",
+    userId,
     req.body.message,
     req.body.socketUuid,
-    req.body.user.credential,
-    req.body.app_id
+    req.body.credential,
+    req.body.appId
   )
   if (convResponse) {
     addResponseToAgentResponsesByUser(userId ?? "", convResponse)

@@ -7,8 +7,6 @@ import { getSocket } from "../"
 import { emitMessage } from "../utils/socket"
 import { includeLastMessage } from "../utils/ai"
 
-import { RequestCake } from "../types/express"
-
 const router = express.Router()
 
 const AIs: any = {
@@ -18,7 +16,7 @@ const AIs: any = {
 
 router.post("/", (req, res, next) => {
   res.send(200)
-  const userId: string = (req as RequestCake).calculatedData.userId
+  const userId: string = res.locals.userId
   const ai = req.body.ai && req.body.ai.length > 0 ? req.body.ai : "gpt4-turbo"
 
   var instruction = req.body.instruction

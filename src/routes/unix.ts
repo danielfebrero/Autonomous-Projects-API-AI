@@ -4,13 +4,12 @@ import { v4 as uuidv4 } from "uuid"
 import { getSocket } from ".."
 import { emitMessage } from "../utils/socket"
 import { runCommand } from "../services/unix"
-import { RequestCake } from "../types/express"
 
 const router = express.Router()
 
 router.post("/", (req, res, next) => {
   res.send(200)
-  const userId: string = (req as RequestCake).calculatedData.userId
+  const userId: string = res.locals.userId
 
   const socket = getSocket(req.body.socketUuid)
 

@@ -13,12 +13,11 @@ import {
   getTwitterUserByState,
   setTwitterUserByState,
 } from "../services/twitter"
-import { RequestCake } from "../types/express"
 
 const router = express.Router()
 
 router.post("/tweet", (req, res, next) => {
-  const userId: string = (req as RequestCake).calculatedData.userId
+  const userId: string = res.locals.userId
   const socket = verifyTwitterUser(res, req, userId)
   if (socket) {
     const message = req.body.quote

@@ -14,7 +14,6 @@ import { getTradeDecision } from "../plugins/trading/trade-decision/trade-decisi
 import { tweetLiveQuote } from "../plugins/tweet/live-quote"
 import { verifyTwitterUser } from "../services/twitter"
 import { getTechnicalAnalysisCake } from "../services/trading"
-import { RequestCake } from "../types/express"
 
 const getServerTools: { [key: string]: Function } = {
   quotation: getQuote,
@@ -31,7 +30,7 @@ const twitterServerTools: { [key: string]: Function } = {
 const router = express.Router()
 
 router.post("/intent", (req, res) => {
-  const userId: string = (req as RequestCake).calculatedData.userId
+  const userId: string = res.locals.userId
   const socket = getSocket(req.body.socketUuid)
   switch (String(req.body.action).toLowerCase()) {
     case "récupère":

@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from "uuid"
 import { getSocket } from "../"
 import { retrieve } from "../controllers/browse"
 import { emitMessage } from "../utils/socket"
-import { RequestCake } from "../types/express"
 
 const router = express.Router()
 
@@ -16,7 +15,7 @@ router.post("/", (req, res, next) => {
 
 router.post("/screenshot", (req, res, next) => {
   res.send(200)
-  const userId: string = (req as RequestCake).calculatedData.userId
+  const userId: string = res.locals.userId
 
   const socket = getSocket(req.body.socketUuid)
   emitMessage(socket, userId, `Browsing and taking a screenshot...`, "text")

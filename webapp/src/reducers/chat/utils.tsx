@@ -57,9 +57,8 @@ export const sendMessageToServer = async ({
         }/chat`,
         {
           message,
-          user,
-          app_id:
-            "705932432287-6ekvke50s3ifkbhvu5tg7mos1gas393n.apps.googleusercontent.com",
+          credential: user.credential,
+          appId: user.clientId,
           conversationID,
           socketUuid,
         }
