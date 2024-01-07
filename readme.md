@@ -2,7 +2,7 @@
 
 ## Introduction
 
-apapiai is a project that connects you to the most receits generative AIs and APIs.
+apapiai is a project that connects you with the most recent generative AIs and APIs.
 
 ## APIs (plug-and-play)
 
