@@ -15,7 +15,7 @@ export const runCommand = ({
   spawnCommand({
     command,
     onDataStdout: (data) => {
-      emitMessage(socket, userId, data, "buffer", pendingTaskId)
+      emitMessage(socket, userId, data + "\n", "buffer", pendingTaskId)
     },
     onClose: (code) => {
       emitMessage(

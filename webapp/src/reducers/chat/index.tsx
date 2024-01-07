@@ -62,9 +62,7 @@ export const chatSlice = createSlice({
                   content: {
                     type: v.content.type,
                     value:
-                      v.content.value +
-                      "\n" +
-                      action.payload.message.content.value,
+                      v.content.value + action.payload.message.content.value,
                   },
                 },
               },

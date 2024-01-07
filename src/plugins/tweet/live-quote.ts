@@ -22,8 +22,8 @@ export const tweetLiveQuote = async ({
 
     // 3. Tweet it
     if (gptResponse) {
-      await tweet(userId, gptResponse)
-      resolve(gptResponse)
+      await tweet(userId, gptResponse as string)
+      resolve(gptResponse as string)
     } else {
       reject("No gpt response")
     }

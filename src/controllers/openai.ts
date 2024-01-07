@@ -1,6 +1,7 @@
 import OpenAI from "openai"
 import { ThreadCreateParams } from "../override/openai/src/resources/beta/threads"
 import { toFile } from "../override/openai/uploads"
+import { ChatCompletion } from "openai/resources"
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY_2,
@@ -41,7 +42,13 @@ export const vision = async ({
   return response.choices[0].message.content
 }
 
-export const chat = async ({ instruction }: { instruction: string }) => {
+export const chat = async ({
+  instruction,
+  stream,
+}: {
+  instruction: string
+  stream?: boolean
+}) => {
   const response = await openai.chat.completions.create({
     model: "gpt-4-1106-preview",
     max_tokens: 4096,
@@ -56,9 +63,11 @@ export const chat = async ({ instruction }: { instruction: string }) => {
         content: instruction,
       },
     ],
+    stream: stream ?? false,
   })
 
-  return response.choices[0].message.content
+  if (!stream) return (response as ChatCompletion).choices[0].message.content
+  else return response
 }
 
 export const createAndRunThread = async (

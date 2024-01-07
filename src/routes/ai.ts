@@ -32,15 +32,12 @@ router.post("/", (req, res, next) => {
   const pendingTaskId = uuidv4()
   emitMessage(socket, userId, pendingTaskId, "pending", pendingTaskId)
 
-  AIs[ai]({ instruction })
-    .then((response: any) => {
-      emitMessage(
-        socket,
-        userId,
-        response.toString(),
-        "markdown",
-        pendingTaskId
-      )
+  AIs[ai]({ instruction, stream: true })
+    .then(async (stream: any) => {
+      for await (const part of stream) {
+        const partText = part.choices[0]?.delta?.content || ""
+        emitMessage(socket, userId, partText, "buffer", pendingTaskId)
+      }
     })
     .catch((err: any) => {
       console.log(err)
