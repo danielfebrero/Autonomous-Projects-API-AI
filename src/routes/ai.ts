@@ -21,10 +21,8 @@ router.post("/", (req, res, next) => {
 
   var instruction = req.body.instruction
   if (req.body.reference && req.body.reference === "ton dernier message") {
-    instruction = includeLastMessage(userId, instruction, false)
-  }
-  if (req.body.forwarded)
     instruction = includeLastMessage(userId, instruction, true)
+  }
 
   const socket = getSocket(req.body.socketUuid)
   emitMessage(socket, userId, `Connecting with ${ai}...`, "text")
