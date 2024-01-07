@@ -63,7 +63,8 @@ When sending a request on Postman, you will see feedback in the app if UI is run
 1. Ensure the directories ./dist/override and ./dist/webapp exist. Create them if not.
 2. cd in webapp, then `npm run build`
 3. cd root (../), then `npm run build`
-4. deploy to gcloud with `gcloud app deploy`
+4. ensure you have a app.yaml file at the root of the project (see docs, only few env variables are mandatory)
+5. deploy to gcloud with `gcloud app deploy`
 
 ## Contributing
 
