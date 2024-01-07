@@ -17,6 +17,7 @@ apapiai is a project that connects you to the most receits generative AIs and AP
 ## Screenshot
 
 ![Project Screenshot](https://i.imgur.com/zaX2liZ.png)
+![Dialogflow CX Routing](https://i.imgur.com/M2hUhRM.png)
 ![Project Diagram](https://i.imgur.com/Hx0h45p.png)
 
 ## Installation
