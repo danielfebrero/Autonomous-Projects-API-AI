@@ -29,10 +29,12 @@ app.use(
     extended: true,
   })
 )
+
+app.use(express.static(path.join(__dirname, "../webapp/build"))) // Serve the static files from the React app
+
 app.use(googleSignin)
 
 // routers
-app.use(express.static(path.join(__dirname, "../webapp/build"))) // Serve the static files from the React app
 app.use("/chat", chatRouter)
 app.use("/browse", browseRouter)
 app.use("/openai", openaiRouter)
