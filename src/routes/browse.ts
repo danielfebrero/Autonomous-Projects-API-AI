@@ -3,8 +3,8 @@ import { v4 as uuidv4 } from "uuid"
 
 import { getSocket } from "../"
 import { retrieve } from "../controllers/browse"
-import { authClient } from "../controllers/auth"
 import { emitMessage } from "../utils/socket"
+import { RequestCake } from "../types/express"
 
 const router = express.Router()
 
@@ -15,40 +15,20 @@ router.post("/", (req, res, next) => {
 })
 
 router.post("/screenshot", (req, res, next) => {
-  authClient(req.body.credential, req.body.appId)
-    .then(async (userId) => {
-      res.send(200)
+  res.send(200)
+  const userId: string = (req as RequestCake).calculatedData.userId
 
-      const socket = getSocket(req.body.socketUuid)
-      emitMessage(
-        socket,
-        userId as string,
-        `Browsing and taking a screenshot...`,
-        "text"
-      )
+  const socket = getSocket(req.body.socketUuid)
+  emitMessage(socket, userId, `Browsing and taking a screenshot...`, "text")
 
-      const pendingTaskId = uuidv4()
-      emitMessage(
-        socket,
-        userId as string,
-        pendingTaskId,
-        "pending",
-        pendingTaskId
-      )
+  const pendingTaskId = uuidv4()
+  emitMessage(socket, userId, pendingTaskId, "pending", pendingTaskId)
 
-      retrieve({ url: req.body.url, selector: req.body.selector ?? "html" })
-        .then((response) => {
-          emitMessage(
-            socket,
-            userId as string,
-            response.img,
-            "image",
-            pendingTaskId
-          )
-        })
-        .catch((err: any) => console.log(err))
+  retrieve({ url: req.body.url, selector: req.body.selector ?? "html" })
+    .then((response) => {
+      emitMessage(socket, userId, response.img, "image", pendingTaskId)
     })
-    .catch(console.log)
+    .catch((err: any) => console.log(err))
 })
 
 export default router

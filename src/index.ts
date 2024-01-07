@@ -13,29 +13,27 @@ import aiRouter from "./routes/ai"
 import twitterRouter from "./routes/twitter"
 import unixRouter from "./routes/unix"
 import trading from "./routes/trading"
-import intent from "./routes/intent"
+import googleSignin from "./middlewares/googlesignin"
 
 const socketUsers = new Map<string, SocketIO.Socket>()
 
 export const getSocket = (socketUuid: string) => socketUsers.get(socketUuid)
 
-// start express
 const app: Express = express()
-app.use("*", cors())
 
-// Register the bodyParser middleware here
+// middlewares
+app.use("*", cors())
 app.use(bodyParser.json())
 app.use(
   bodyParser.urlencoded({
     extended: true,
   })
 )
+app.use(express.static(path.join(__dirname, "../webapp/build"))) // Serve the static files from the React app
+app.use(googleSignin)
 
-// Serve the static files from the React app
-app.use(express.static(path.join(__dirname, "../webapp/build")))
-
+// routers
 app.use("/chat", chatRouter)
-app.use("/intent", intent)
 app.use("/browse", browseRouter)
 app.use("/openai", openaiRouter)
 app.use("/ai", aiRouter)

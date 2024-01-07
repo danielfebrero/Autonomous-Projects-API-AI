@@ -1,9 +1,9 @@
 import express from "express"
 import { v4 as uuidv4 } from "uuid"
 
-import { authClient } from "../controllers/auth"
 import { addToChat } from "../controllers/dialogflow"
 import { prepareResponseForWebapp } from "../utils/webapp"
+import { RequestCake } from "../types/express"
 
 type AgentResponseType = { uuid: string; value: string | Buffer }
 
@@ -58,29 +58,23 @@ export const addResponseToAgentResponsesByUser = (
 
 const router = express.Router()
 
-router.post("/", (req, res) => {
-  authClient(req.body.user.credential, req.body.app_id)
-    .then(async (userId) => {
-      const convResponse = await addToChat(
-        userId ?? "",
-        req.body.message,
-        req.body.socketUuid,
-        req.body.user.credential,
-        req.body.app_id
-      )
-      if (convResponse) {
-        addResponseToAgentResponsesByUser(userId ?? "", convResponse)
-        res.send(
-          prepareResponseForWebapp(convResponse as unknown as string, "text")
-        )
-      } else {
-        res.send(200)
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-      res.status(500).send(error)
-    })
+router.post("/", async (req, res) => {
+  const userId: string = (req as RequestCake).calculatedData.userId
+  const convResponse = await addToChat(
+    userId ?? "",
+    req.body.message,
+    req.body.socketUuid,
+    req.body.user.credential,
+    req.body.app_id
+  )
+  if (convResponse) {
+    addResponseToAgentResponsesByUser(userId ?? "", convResponse)
+    res.send(
+      prepareResponseForWebapp(convResponse as unknown as string, "text")
+    )
+  } else {
+    res.send(200)
+  }
 })
 
 export default router

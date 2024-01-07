@@ -4,9 +4,10 @@ import { v4 as uuidv4 } from "uuid"
 import { chat } from "../controllers/openai"
 import { generate } from "../controllers/vertex"
 import { getSocket } from "../"
-import { authClient } from "../controllers/auth"
 import { emitMessage } from "../utils/socket"
 import { includeLastMessage } from "../utils/ai"
+
+import { RequestCake } from "../types/express"
 
 const router = express.Router()
 
@@ -16,46 +17,36 @@ const AIs: any = {
 }
 
 router.post("/", (req, res, next) => {
-  authClient(req.body.credential, req.body.appId)
-    .then(async (userId) => {
-      res.send(200)
-      const ai =
-        req.body.ai && req.body.ai.length > 0 ? req.body.ai : "gpt4-turbo"
+  res.send(200)
+  const userId: string = (req as RequestCake).calculatedData.userId
+  const ai = req.body.ai && req.body.ai.length > 0 ? req.body.ai : "gpt4-turbo"
 
-      var instruction = req.body.instruction
-      if (req.body.reference && req.body.reference === "ton dernier message") {
-        instruction = includeLastMessage(userId as string, instruction, false)
-      }
-      if (req.body.forwarded)
-        instruction = includeLastMessage(userId as string, instruction, true)
+  var instruction = req.body.instruction
+  if (req.body.reference && req.body.reference === "ton dernier message") {
+    instruction = includeLastMessage(userId, instruction, false)
+  }
+  if (req.body.forwarded)
+    instruction = includeLastMessage(userId, instruction, true)
 
-      const socket = getSocket(req.body.socketUuid)
-      emitMessage(socket, userId as string, `Connecting with ${ai}...`, "text")
+  const socket = getSocket(req.body.socketUuid)
+  emitMessage(socket, userId, `Connecting with ${ai}...`, "text")
 
-      const pendingTaskId = uuidv4()
+  const pendingTaskId = uuidv4()
+  emitMessage(socket, userId, pendingTaskId, "pending", pendingTaskId)
+
+  AIs[ai]({ instruction })
+    .then((response: any) => {
       emitMessage(
         socket,
-        userId as string,
-        pendingTaskId,
-        "pending",
+        userId,
+        response.toString(),
+        "markdown",
         pendingTaskId
       )
-
-      AIs[ai]({ instruction })
-        .then((response: any) => {
-          emitMessage(
-            socket,
-            userId as string,
-            response.toString(),
-            "markdown",
-            pendingTaskId
-          )
-        })
-        .catch((err: any) => {
-          console.log(err)
-        })
     })
-    .catch(console.log)
+    .catch((err: any) => {
+      console.log(err)
+    })
 })
 
 export default router

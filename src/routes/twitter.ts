@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from "uuid"
 import TwitterApi from "twitter-api-v2"
 
 import { tweet } from "../controllers/twitter"
-import { authClient } from "../controllers/auth"
 import {
   getLastAgentResponseByUser,
   getBeforeLastAgentResponseByUser,
@@ -14,63 +13,46 @@ import {
   getTwitterUserByState,
   setTwitterUserByState,
 } from "../services/twitter"
+import { RequestCake } from "../types/express"
 
 const router = express.Router()
 
 router.post("/tweet", (req, res, next) => {
-  authClient(req.body.credential, req.body.appId)
-    .then(async (userId) => {
-      const socket = verifyTwitterUser(res, req, userId)
-      if (socket) {
-        const message = req.body.quote
-          ? req.body.quote.replace(/^```|```$/g, "")
-          : req.body.reference && req.body.reference === "ton dernier message"
-          ? getLastAgentResponseByUser(userId ?? "")
-          : req.body.reference &&
-            req.body.reference === "ton avant-dernier message"
-          ? getBeforeLastAgentResponseByUser(userId ?? "")
-          : null
+  const userId: string = (req as RequestCake).calculatedData.userId
+  const socket = verifyTwitterUser(res, req, userId)
+  if (socket) {
+    const message = req.body.quote
+      ? req.body.quote.replace(/^```|```$/g, "")
+      : req.body.reference && req.body.reference === "ton dernier message"
+      ? getLastAgentResponseByUser(userId)
+      : req.body.reference && req.body.reference === "ton avant-dernier message"
+      ? getBeforeLastAgentResponseByUser(userId)
+      : null
 
-        emitMessage(socket, userId as string, "Tweeting...", "text")
+    emitMessage(socket, userId, "Tweeting...", "text")
 
-        const pendingTaskId = uuidv4()
+    const pendingTaskId = uuidv4()
+    emitMessage(socket, userId, pendingTaskId, "pending", pendingTaskId)
+
+    if (!message) {
+      emitMessage(socket, userId, "No message to tweet", "text", pendingTaskId)
+      return
+    }
+
+    tweet(userId ?? "", message)
+      .then((response: string) => {
         emitMessage(
           socket,
-          userId as string,
-          pendingTaskId,
-          "pending",
+          userId,
+          "Tweeted: " + response,
+          "text",
           pendingTaskId
         )
-
-        if (!message) {
-          emitMessage(
-            socket,
-            userId as string,
-            "No message to tweet",
-            "text",
-            pendingTaskId
-          )
-          return
-        }
-
-        tweet(userId ?? "", message)
-          .then((response: string) => {
-            emitMessage(
-              socket,
-              userId as string,
-              "Tweeted: " + response,
-              "text",
-              pendingTaskId
-            )
-          })
-          .catch((error) => {
-            res.status(500).send("Internal error when tweeting: " + error)
-          })
-      }
-    })
-    .catch((error) => {
-      res.status(403).send("Invalid google signin credential!")
-    })
+      })
+      .catch((error) => {
+        res.status(500).send("Internal error when tweeting: " + error)
+      })
+  }
 })
 
 router.get("/callback", (req, res) => {
