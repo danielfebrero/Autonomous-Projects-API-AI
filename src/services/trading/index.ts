@@ -213,7 +213,7 @@ export const getTechnicalAnalysisCake = async ({
     [] as number[]
   )
 
-  const result = JSON.stringify({
+  const result = {
     MACD: {
       "12,26": macd(
         historicalDataClose,
@@ -288,7 +288,7 @@ export const getTechnicalAnalysisCake = async ({
         100
       ),
     },
-  })
+  }
 
   return {
     content: JSON.stringify(result),
