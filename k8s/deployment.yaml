@@ -14,9 +14,10 @@ spec:
     spec:
       containers:
       - name: nodejs-container
-        image: danielfebrero/apapiai:2  # Remplacez par le chemin de votre image
+        image: danielfebrero/apapiai:latest
         ports:
           - containerPort: 8080
+          - containerPort: 3000
         envFrom:
         - secretRef:
             name: env-secret

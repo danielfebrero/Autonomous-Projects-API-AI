@@ -7,6 +7,11 @@ spec:
   selector:
     app: nodejs
   ports:
-    - protocol: TCP
-      port: 8080  # Le port sur lequel le service sera exposé à l'intérieur du cluster
-      targetPort: 8080  # Le port sur lequel votre conteneur écoute
+    - name: nodejs-port
+      protocol: TCP
+      port: 8080  
+      targetPort: 8080
+    - name: react-port
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
