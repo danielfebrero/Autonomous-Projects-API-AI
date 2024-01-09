@@ -17,6 +17,7 @@ import {
 const router = express.Router()
 
 router.post("/tweet", (req, res, next) => {
+  res.send(200)
   const userId: string = res.locals.userId
   const socket = verifyTwitterUser(res, req, userId)
   if (socket) {
@@ -48,8 +49,14 @@ router.post("/tweet", (req, res, next) => {
           pendingTaskId
         )
       })
-      .catch((error) => {
-        res.status(500).send("Internal error when tweeting: " + error)
+      .catch((err) => {
+        emitMessage(
+          socket,
+          userId as string,
+          "Internal error: " + err,
+          "text",
+          pendingTaskId
+        )
       })
   }
 })

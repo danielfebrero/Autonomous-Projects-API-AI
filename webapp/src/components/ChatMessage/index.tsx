@@ -36,7 +36,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
 
       {message.type === "buffer" && (
         <div className="message-text">
-          {(message.value as Buffer).toString()}
+          <Markdown>{(message.value as Buffer).toString()}</Markdown>
         </div>
       )}
 

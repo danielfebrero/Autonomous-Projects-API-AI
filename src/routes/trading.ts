@@ -32,10 +32,10 @@ const router = express.Router()
 router.post("/intent", (req, res) => {
   const userId: string = res.locals.userId
   const socket = getSocket(req.body.socketUuid)
+  res.send(200)
+
   switch (String(req.body.action).toLowerCase()) {
     case "récupère":
-      res.send(200)
-
       const matchedTool = getServerTools[req.body.serverTool]
       if (!matchedTool) {
         emitMessage(
@@ -73,8 +73,14 @@ router.post("/intent", (req, res) => {
             pendingTaskId
           )
         })
-        .catch((error: any) => {
-          console.log(error)
+        .catch((err: any) => {
+          emitMessage(
+            socket,
+            userId as string,
+            "Internal error: " + err,
+            "text",
+            pendingTaskId
+          )
         })
       break
 
@@ -113,8 +119,14 @@ router.post("/intent", (req, res) => {
               pendingTaskId
             )
           })
-          .catch((error: string) => {
-            res.status(500).send("Internal error when using the tool: " + error)
+          .catch((err: string) => {
+            emitMessage(
+              socket,
+              userId as string,
+              "Internal error: " + err,
+              "text",
+              pendingTaskId
+            )
           })
       }
       break

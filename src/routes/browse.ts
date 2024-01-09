@@ -27,7 +27,15 @@ router.post("/screenshot", (req, res, next) => {
     .then((response) => {
       emitMessage(socket, userId, response.img, "image", pendingTaskId)
     })
-    .catch((err: any) => console.log(err))
+    .catch((err: any) =>
+      emitMessage(
+        socket,
+        userId,
+        "Internal error: " + err,
+        "image",
+        pendingTaskId
+      )
+    )
 })
 
 export default router
