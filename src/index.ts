@@ -32,6 +32,11 @@ app.use(
 
 app.use(express.static(path.join(__dirname, "../webapp/build"))) // Serve the static files from the React app
 
+// Handles any requests that don't match the ones above
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../webapp/build", "index.html"))
+})
+
 app.use(googleSignin)
 
 // routers
@@ -42,11 +47,6 @@ app.use("/ai", aiRouter)
 app.use("/twitter", twitterRouter)
 app.use("/unix", unixRouter)
 app.use("/trading", trading)
-
-// Handles any requests that don't match the ones above
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../webapp/build", "index.html"))
-})
 
 const server = new http.Server(app)
 

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npx puppeteer browsers install chrome && npx tsc && rm -r ./dist/webapp && cp -r webapp/build ./dist/webapp && rm -r ./dist/override && cp -r src/override ./dist/override",
+    "build": "npx puppeteer browsers install chrome && npx tsc && rm -r ./dist/override && cp -r src/override ./dist/override",
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts"
   },

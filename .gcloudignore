@@ -17,3 +17,7 @@
 node_modules/
 
 .cache/
+
+webapp/node_modules
+webapp/public
+webapp/src

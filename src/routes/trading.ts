@@ -138,41 +138,27 @@ router.post("/intent", (req, res) => {
 })
 
 router.post("/economic-calendar", (req, res, next) => {
-  authClient(req.body.credential, req.body.appId)
-    .then(async (userId) => {
-      res.send(200)
+  res.send(200)
+  const userId: string = res.locals.userId
 
+  const socket = getSocket(req.body.socketUuid)
+  emitMessage(socket, userId, `Fetching: economic calendar...`, "text")
+
+  const pendingTaskId = uuidv4()
+  emitMessage(socket, userId, pendingTaskId, "pending", pendingTaskId)
+
+  getEconomicCalendarFromTE()
+    .then((response) => {
       const socket = getSocket(req.body.socketUuid)
       emitMessage(
         socket,
-        userId as string,
-        `Fetching: economic calendar...`,
-        "text"
-      )
-
-      const pendingTaskId = uuidv4()
-      emitMessage(
-        socket,
-        userId as string,
-        pendingTaskId,
-        "pending",
+        userId,
+        response.content,
+        response.type,
         pendingTaskId
       )
-
-      getEconomicCalendarFromTE()
-        .then((response) => {
-          const socket = getSocket(req.body.socketUuid)
-          emitMessage(
-            socket,
-            userId as string,
-            response.content,
-            response.type,
-            pendingTaskId
-          )
-        })
-        .catch((err: any) => console.log(err))
     })
-    .catch(console.log)
+    .catch((err: any) => console.log(err))
 })
 
 export default router
